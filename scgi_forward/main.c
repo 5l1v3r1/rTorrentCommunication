@@ -3,15 +3,23 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include "scgi.h"
+#include "KBCKit/KBCKit.h"
+
+int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource);
+void handle_client(int client, int localMethod, const char * localSource);
 
 char * generate_request(const char * body, size_t * lengthOut);
-int connect_socket(const char * socketPath);
+
+int parse_address(const char * str, char * host, int * port);
+int listen_method(int method, const char * source);
+int accept_method(int method, int server);
+int connect_method(int method, const char * addr);
 
 int main(int argc, const char * argv[]) {
     int listenMethod = -1; // method 0 = inet socket, method 1 = unix socket
-    char * listenSource = NULL; // method 0 = port number, method 1 = unix path
-    char * localMethod = -1; // see listenMethod
-    char * localSource = NULL; // see listenSource
+    const char * listenSource = NULL; // inet = port number, unix = unix path
+    int localMethod = -1; // see listenMethod
+    const char * localSource = NULL; // see listenSource
     int allowRemote = 1;
     int i;
     for (i = 1; i < argc; i++) {
@@ -50,6 +58,28 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
     }
+    int server = listen_method(listenMethod, listenSource, allowRemote);
+    if (server < 0) exit(1);
+    return server_main_loop(server, localMethod, localSource);
+}
+
+int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource) {
+    while (1) {
+        int client = accept_method(serverMethod, server);
+        if (client < 0) {
+            return 1;
+        }
+        if (fork()) {
+            close(client);
+        } else {
+            handle_client(client, localMethod, localSource);
+        }
+    }
+    return 0;
+}
+
+void handle_client(int client, int localMethod, const char * localSource) {
+    // read info from client
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
@@ -69,23 +99,6 @@ char * generate_request(const char * body, size_t * lengthOut) {
     memcpy(&req[length], body, strlen(body));
     *lengthOut = length + strlen(body);
     return req;
-}
-
-int connect_socket(const char * socketPath) {
-    struct sockaddr_un addr;
-    int fd;
-    if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-        perror("socket");
-        return -1;
-    }
-    addr.sun_family = AF_UNIX;
-    strcpy(addr.sun_path, socketPath);
-    int len = strlen(socketPath) + sizeof(addr.sun_family);
-    if (connect(fd, (struct sockaddr *)&addr, len) < 0) {
-        perror("connect");
-        return -1;
-    }
-    return fd;
 }
 
 int main(int argc, const char * argv[]) {
@@ -108,4 +121,137 @@ int main(int argc, const char * argv[]) {
     }
     fclose(fp);
     return 0;
+}
+
+int parse_address(const char * str, char * host, int * port) {
+    int i, state = 0, hostLen = 0, portLen = 0;
+    char hostStr[32];
+    char portStr[8];
+    for (i = 0; i < strlen(str); i++) {
+        if (str[i] == ':') state ++;
+        else if (state == 0) {
+            if (hostLen == 31) return -1;
+            hostStr[hostLen++] = str[i];
+            hostStr[hostLen] = 0;
+        } else if (state == 1) {
+            if (portLen == 7) return -1;
+            portStr[portLen++] = str[i];
+            portStr[portLen] = 0;
+        }
+    }
+    if (state == 0) return -1;
+    if (host) strcpy(host, hostStr);
+    if (port) *port = atoi(portStr);
+    return 0;
+}
+
+int listen_method(int method, const char * source, int allowRemote) {
+    int server;
+    if (method == 0) {
+        // inet socket
+        struct sockaddr_in local;
+        if ((server = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+            perror("socket");
+            return -1;
+        }
+        local.sin_family = AF_INET;
+        local.sin_addr.s_addr = INADDR_ANY; // TODO: allowLocal
+        local.sin_port = htons(port);
+        if (bind(server, (struct sockaddr *)&local, sizeof(local)) < 0) {
+            perror("bind");
+            return -1;
+        }
+    } else {
+        // unix socket
+        struct sockaddr_un local;
+        if ((server = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+            perror("socket");
+            return -1;
+        }
+        local.sun_family = AF_UNIX;
+        strcpy(local.sun_path, source);
+        if (unlink(source) != 0) {
+            perror("unlink");
+            return -1;
+        }
+        int length = strlen(source) + sizeof(local.sun_family);
+        if (bind(server, (struct sockaddr *)&local, length) < 0) {
+            perror("bind");
+            return -1;
+        }
+    }
+    if (listen(server, 5) < 0) {
+        perror("listen");
+        return -1;
+    }
+    return server;
+}
+
+int accept_method(int method, int server) {
+    if (method == 0) {
+        // inet socket
+        struct sockaddr_in remote;
+        int x = sizeof(remote);
+        return accept(server, (struct sockaddr *)&remote, &x);
+    } else {
+        // unix socket
+        struct sockaddr_un remote;
+        int x = sizeof(remote);
+        return accept(server, (struct sockaddr *)&remote, &x);
+    }
+}
+
+int connect_method(int method, const char * addrStr) {
+    if (method == 0) {
+        // inet socket
+        char hostAddress[32];
+        int hostPort = 0;
+        if (parse_address(addrStr, hostAddress, &hostPort) != 0) {
+            fprintf(stderr, "parse_address: failed\n");
+            return -1;
+        }
+        
+        struct sockaddr_in addr;
+        struct hostent * ent;
+        int fd;
+        if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+            perror("socket");
+            return -1;
+        }
+        ent = gethostbyname(hostAddress);
+        if (!ent) {
+            perror("gethostbyname");
+            return -1;
+        }
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(hostPort);
+        memcpy(&addr.sin_addr.s_addr, ent->h_addr, sizeof(addr.sin_addr.s_addr));
+        bzero(addr.sin_zero, 8);
+        
+        if (connect(fd, (struct sockaddr *)&addr, len) < 0) {
+            perror("connect");
+            return -1;
+        }
+        return fd;
+    } else {
+        // unix socket
+        struct sockaddr_un addr;
+        if (strlen(addr) + 1 > sizeof(addr.sun_path)) {
+            fprintf(stderr, "connect_method: path too long");
+            return -1;
+        }
+        int fd;
+        if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+            perror("socket");
+            return -1;
+        }
+        addr.sun_family = AF_UNIX;
+        strcpy(addr.sun_path, addrStr);
+        int len = sizeof(addr.sun_family) + strlen(addr.sun_path);
+        if (connect(fd, (struct sockaddr *)&addr, len) < 0) {
+            perror("connect");
+            return -1;
+        }
+        return fd;
+    }
 }
