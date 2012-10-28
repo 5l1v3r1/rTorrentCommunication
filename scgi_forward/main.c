@@ -1,9 +1,11 @@
 #include <sys/un.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <netdb.h>
 #include "scgi.h"
-#include "KBCKit/KBCKit.h"
+#include "client_protocol.h"
 
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource);
 void handle_client(int client, int localMethod, const char * localSource);
@@ -11,7 +13,7 @@ void handle_client(int client, int localMethod, const char * localSource);
 char * generate_request(const char * body, size_t * lengthOut);
 
 int parse_address(const char * str, char * host, int * port);
-int listen_method(int method, const char * source);
+int listen_method(int method, const char * source, int allowRemote);
 int accept_method(int method, int server);
 int connect_method(int method, const char * addr);
 
@@ -60,7 +62,7 @@ int main(int argc, const char * argv[]) {
     }
     int server = listen_method(listenMethod, listenSource, allowRemote);
     if (server < 0) exit(1);
-    return server_main_loop(server, localMethod, localSource);
+    return server_main_loop(listenMethod, server, localMethod, localSource);
 }
 
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource) {
@@ -79,7 +81,15 @@ int server_main_loop(int serverMethod, int server, int localMethod, const char *
 }
 
 void handle_client(int client, int localMethod, const char * localSource) {
-    // read info from client
+    char * username, * password;
+    void * xmlBuffer;
+    size_t xmlLength;
+    if (client_protocol_read_request(client, &username, &password, &xmlBuffer, &xmlLength) < 0) {
+        close(client);
+        fprintf(stderr, "error: invalid client request\n");
+        return;
+    }
+    // TODO: open the socket here and read the data from it
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
@@ -99,28 +109,6 @@ char * generate_request(const char * body, size_t * lengthOut) {
     memcpy(&req[length], body, strlen(body));
     *lengthOut = length + strlen(body);
     return req;
-}
-
-int main(int argc, const char * argv[]) {
-    char * body = "<?xml version=\"1.0\"?>\r\n\
-<methodCall>\r\n\
-   <methodName>system.listMethods</methodName>\r\n\
-   <params></params>\r\n\
-   </methodCall>";
-    FILE * fp = fdopen(fd, "r+");
-    size_t length;
-    char * sendBuffer = generate_request(body, &length);
-    int wrote = fwrite(sendBuffer, 1, length, fp);
-    fflush(fp);
-    printf("wrote %d\n", wrote);
-    while (!feof(fp)) {
-        char buff[512];
-        buff[0] = 0;
-        fgets(buff, 512, fp);
-        printf("%s", buff);
-    }
-    fclose(fp);
-    return 0;
 }
 
 int parse_address(const char * str, char * host, int * port) {
@@ -149,6 +137,7 @@ int listen_method(int method, const char * source, int allowRemote) {
     int server;
     if (method == 0) {
         // inet socket
+        int port = atoi(source);
         struct sockaddr_in local;
         if ((server = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("socket");
@@ -164,6 +153,10 @@ int listen_method(int method, const char * source, int allowRemote) {
     } else {
         // unix socket
         struct sockaddr_un local;
+        if (strlen(source) + 1 > sizeof(local.sun_path)) {
+            fprintf(stderr, "listen_method: path too long");
+            return -1;
+        }
         if ((server = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
             perror("socket");
             return -1;
@@ -228,7 +221,7 @@ int connect_method(int method, const char * addrStr) {
         memcpy(&addr.sin_addr.s_addr, ent->h_addr, sizeof(addr.sin_addr.s_addr));
         bzero(addr.sin_zero, 8);
         
-        if (connect(fd, (struct sockaddr *)&addr, len) < 0) {
+        if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
             perror("connect");
             return -1;
         }
@@ -236,7 +229,7 @@ int connect_method(int method, const char * addrStr) {
     } else {
         // unix socket
         struct sockaddr_un addr;
-        if (strlen(addr) + 1 > sizeof(addr.sun_path)) {
+        if (strlen(addrStr) + 1 > sizeof(addr.sun_path)) {
             fprintf(stderr, "connect_method: path too long");
             return -1;
         }
