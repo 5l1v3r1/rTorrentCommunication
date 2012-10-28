@@ -1,6 +1,5 @@
 scgi_forward: scgi.o client_protocol.o test
 	gcc main.c scgi.o client_protocol.o -o scgi_forward
-	rm *.o
 
 test: scgi.o
 	gcc test.c scgi.o -o test
@@ -20,3 +19,4 @@ clean:
 	rm test
 	rm scgi_forward
 	rm *.o
+	cd KBCKit; make clean
