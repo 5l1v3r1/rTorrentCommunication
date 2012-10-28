@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FA1A3091163DC4F30084FCEE /* ANRTorrentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */; };
-		FA1A3092163DC4F30084FCEE /* ANRTorrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */; };
+		FA1A309A163DC6130084FCEE /* ANRTorrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3099163DC6130084FCEE /* ANRTorrentOperation.m */; };
 		FAD84C65163D9684008A132A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD84C64163D9684008A132A /* Foundation.framework */; };
 		FAD84C68163D9684008A132A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD84C67163D9684008A132A /* main.m */; };
 		FAD84C6C163D9684008A132A /* RTorrentControl.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = FAD84C6B163D9684008A132A /* RTorrentControl.1 */; };
@@ -47,8 +47,8 @@
 /* Begin PBXFileReference section */
 		FA1A308D163DC4F30084FCEE /* ANRTorrentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentInfo.h; sourceTree = "<group>"; };
 		FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentInfo.m; sourceTree = "<group>"; };
-		FA1A308F163DC4F30084FCEE /* ANRTorrentOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentOperation.h; sourceTree = "<group>"; };
-		FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentOperation.m; sourceTree = "<group>"; };
+		FA1A3098163DC6130084FCEE /* ANRTorrentOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentOperation.h; sourceTree = "<group>"; };
+		FA1A3099163DC6130084FCEE /* ANRTorrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentOperation.m; sourceTree = "<group>"; };
 		FAD84C60163D9684008A132A /* RTorrentControl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RTorrentControl; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD84C64163D9684008A132A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FAD84C67163D9684008A132A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -112,8 +112,8 @@
 			children = (
 				FA1A308D163DC4F30084FCEE /* ANRTorrentInfo.h */,
 				FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */,
-				FA1A308F163DC4F30084FCEE /* ANRTorrentOperation.h */,
-				FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */,
+				FA1A3098163DC6130084FCEE /* ANRTorrentOperation.h */,
+				FA1A3099163DC6130084FCEE /* ANRTorrentOperation.m */,
 			);
 			path = RTorrent;
 			sourceTree = "<group>";
@@ -295,7 +295,7 @@
 				FAD84CBE163DA25C008A132A /* ANRPCSession.m in Sources */,
 				FAD84CC1163DA4DA008A132A /* TestClass.m in Sources */,
 				FA1A3091163DC4F30084FCEE /* ANRTorrentInfo.m in Sources */,
-				FA1A3092163DC4F30084FCEE /* ANRTorrentOperation.m in Sources */,
+				FA1A309A163DC6130084FCEE /* ANRTorrentOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

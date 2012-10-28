@@ -23,6 +23,9 @@ typedef enum {
     NSArray * arguments;
 }
 
+@property (readonly) ANRTorrentOperationType type;
+@property (readonly) NSARray * arguments;
+
 - (id)initWithOperation:(ANRTorrentOperationType)operation arguments:(NSArray *)args;
 
 @end

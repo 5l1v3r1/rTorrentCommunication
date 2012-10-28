@@ -10,6 +10,9 @@
 
 @implementation ANRTorrentOperation
 
+@synthesize type;
+@synthesize arguments;
+
 - (id)initWithOperation:(ANRTorrentOperationType)operation arguments:(NSArray *)args {
     if ((self = [super init])) {
         type = operation;
