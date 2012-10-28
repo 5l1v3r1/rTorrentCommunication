@@ -7,6 +7,9 @@
 #include "scgi.h"
 #include "client_protocol.h"
 
+#define AUTH_USER "root"
+#define AUTH_PASS "password123"
+
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource);
 void handle_client(int client, int localMethod, const char * localSource);
 
@@ -89,7 +92,35 @@ void handle_client(int client, int localMethod, const char * localSource) {
         fprintf(stderr, "error: invalid client request\n");
         return;
     }
+    if (strcmp(username, AUTH_USER) != 0 || strcmp(password, AUTH_PASS) != 0) {
+        fprintf(stderr, "error: got incorrect login\n");
+        free(username);
+        free(password);
+        free(xmlBuffer);
+        return;
+    }
+    free(username);
+    free(password);
     // TODO: open the socket here and read the data from it
+    int localClient = connect_method(localMethod, localSource);
+    if (localClient < 0) {
+        close(client);
+        fprintf(stderr, "error: failed to connect locally\n");
+        return;
+    }
+    char * xmlString = (char *)malloc(xmlLength + 1);
+    memcpy(xmlString, xmlBuffer, xmlLength);
+    xmlString[xmlLength] = 0;
+    free(xmlBuffer);
+    size_t requestLength = 0;
+    char * request = generate_request(xmlString, &requestLength);
+    free(xmlString);
+    
+    FILE * localFp = fdopen(localClient, "r+");
+    fwrite(request, 1, requestLength, localFp);
+    free(request);
+    // TODO: read response here
+    fclose(localFp);
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
