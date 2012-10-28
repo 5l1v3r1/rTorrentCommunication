@@ -1,0 +1,32 @@
+#
+#######################################################
+# From 'shell_config'
+#######################################################
+ENABLE_ABYSS_THREADS="yes"
+ENABLE_LIBXML2_BACKEND="no"
+MUST_BUILD_WININET_CLIENT="no"
+MUST_BUILD_CURL_CLIENT="yes"
+MUST_BUILD_LIBWWW_CLIENT="no"
+NEED_RPATH="no"
+NEED_WL_RPATH="RPATH)"
+LIBXMLRPCPP_NAME="xmlrpc++"
+LSOCKET=""
+WININET_LDADD=""
+WININET_RPATH=""
+WININET_WL_RPATH=""
+CURL_LDADD="-L/usr/lib/i386-linux-gnu -lcurl -Wl,-Bsymbolic-functions -Wl,-z,relro"
+CURL_RPATH="-rpath /usr/lib"
+CURL_WL_RPATH="-Wl,--rpath -Wl,/usr/lib"
+LIBWWW_LDADD=""
+LIBWWW_RPATH=""
+LIBWWW_WL_RPATH=""
+XMLRPC_MAJOR_RELEASE="1"
+XMLRPC_MINOR_RELEASE="16"
+XMLRPC_POINT_RELEASE="42"
+FEATURE_LIST="c++ abyss-server curl-client "
+PREFIX="/usr/local"
+HEADERINST_DIR="/usr/local/include"
+LIBINST_DIR="/usr/local/lib"
+BLDDIR="/root/projects/rpcshit/xmlrpc-c-1.16.42"
+ABS_SRCDIR="/root/projects/rpcshit/xmlrpc-c-1.16.42"
+#######################################################
