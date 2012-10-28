@@ -8,11 +8,48 @@ char * generate_request(const char * body, size_t * lengthOut);
 int connect_socket(const char * socketPath);
 
 int main(int argc, const char * argv[]) {
-    int listenMethod = 0; // method 0 = inet socket, method 1 = unix socket
+    int listenMethod = -1; // method 0 = inet socket, method 1 = unix socket
     char * listenSource = NULL; // method 0 = port number, method 1 = unix path
-    char * localMethod = 0; // see listenMethod
+    char * localMethod = -1; // see listenMethod
     char * localSource = NULL; // see listenSource
-    
+    int allowRemote = 1;
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--local_unix") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --local_unix\n");
+                exit(1);
+            }
+            localMethod = 1;
+            localSource = argv[++i];
+        } else if (strcmp(argv[i], "--local_host") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --local_host\n");
+                exit(1);
+            }
+            localMethod = 0;
+            localSource = argv[++i];
+        } else if (strcmp(argv[i], "--listen_unix") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --listen_unix\n");
+                exit(1);
+            }
+            listenMethod = 1;
+            listenSource = argv[++i];
+        } else if (strcmp(argv[i], "--listen_port") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --listen_port\n");
+                exit(1);
+            }
+            listenMethod = 0;
+            listenSource = argv[++i];
+        } else if (strcmp(argv[i], "--local") == 0) {
+            allowRemote = 0;
+        } else {
+            fprintf(stderr, "Unknown option: %s\n", argv[i]);
+            exit(1);
+        }
+    }
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
