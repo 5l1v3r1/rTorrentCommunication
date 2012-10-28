@@ -9,10 +9,12 @@
 #include "http_response.h"
 
 #define AUTH_USER "root"
-#define AUTH_PASS "password123"
+#define AUTH_PASS "toor"
 
-int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource);
-void handle_client(int client, int localMethod, const char * localSource);
+void print_usage(const char * name);
+
+int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password);
+void handle_client(int client, int localMethod, const char * localSource, const char * username, const char * password);
 
 char * generate_request(const char * body, size_t * lengthOut);
 
@@ -26,6 +28,8 @@ int main(int argc, const char * argv[]) {
     const char * listenSource = NULL; // inet = port number, unix = unix path
     int localMethod = -1; // see listenMethod
     const char * localSource = NULL; // see listenSource
+    const char * username = AUTH_USER;
+    const char * password = AUTH_PASS;
     int allowRemote = 1;
     int i;
     for (i = 1; i < argc; i++) {
@@ -59,25 +63,41 @@ int main(int argc, const char * argv[]) {
             listenSource = argv[++i];
         } else if (strcmp(argv[i], "--local") == 0) {
             allowRemote = 0;
+        } else if (strcmp(argv[i], "--username") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --username");
+                exit(1);
+            }
+            username = argv[++i];
+        } else if (strcmp(argv[i], "--password") == 0) {
+            if (i + 1 == argc) {
+                fprintf(stderr, "Missing value for --password");
+                exit(1);
+            }
+            password = argv[++i];
         } else {
             fprintf(stderr, "Unknown option: %s\n", argv[i]);
             exit(1);
         }
     }
     if (localMethod < 0) {
-        fprintf(stderr, "error: missing --local_unix or --local_host\n");
+        print_usage(argv[0]);
         exit(1);
     }
     if (listenMethod < 0) {
-        fprintf(stderr, "error: missing --listen_unix or --listen_port\n");
+        print_usage(argv[0]);
         exit(1);
     }
     int server = listen_method(listenMethod, listenSource, allowRemote);
     if (server < 0) exit(1);
-    return server_main_loop(listenMethod, server, localMethod, localSource);
+    return server_main_loop(listenMethod, server, localMethod, localSource, username, password);
 }
 
-int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource) {
+void print_usage(const char * name) {
+    fprintf(stderr, "Usage: %s [--listen_unix path | --listen_port port [--local]] [--local_unix path | --local_host host:port] --username user --password pass\n", name);
+}
+
+int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password) {
     while (1) {
         int client = accept_method(serverMethod, server);
         if (client < 0) {
@@ -86,13 +106,13 @@ int server_main_loop(int serverMethod, int server, int localMethod, const char *
         if (fork()) {
             close(client);
         } else {
-            handle_client(client, localMethod, localSource);
+            handle_client(client, localMethod, localSource, username, password);
         }
     }
     return 0;
 }
 
-void handle_client(int client, int localMethod, const char * localSource) {
+void handle_client(int client, int localMethod, const char * localSource, const char * usernameRight, const char * passwordRight) {
     char * username, * password;
     void * xmlBuffer;
     size_t xmlLength;
@@ -101,11 +121,12 @@ void handle_client(int client, int localMethod, const char * localSource) {
         fprintf(stderr, "error: invalid client request\n");
         return;
     }
-    if (strcmp(username, AUTH_USER) != 0 || strcmp(password, AUTH_PASS) != 0) {
+    if (strcmp(username, usernameRight) != 0 || strcmp(password, passwordRight) != 0) {
         fprintf(stderr, "error: got incorrect login\n");
         free(username);
         free(password);
         free(xmlBuffer);
+        close(client);
         return;
     }
     free(username);
