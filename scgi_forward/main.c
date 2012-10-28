@@ -6,6 +6,7 @@
 #include <netdb.h>
 #include "scgi.h"
 #include "client_protocol.h"
+#include "http_response.h"
 
 #define AUTH_USER "root"
 #define AUTH_PASS "password123"
@@ -63,6 +64,14 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
     }
+    if (localMethod < 0) {
+        fprintf(stderr, "error: missing --local_unix or --local_host\n");
+        exit(1);
+    }
+    if (listenMethod < 0) {
+        fprintf(stderr, "error: missing --listen_unix or --listen_port\n");
+        exit(1);
+    }
     int server = listen_method(listenMethod, listenSource, allowRemote);
     if (server < 0) exit(1);
     return server_main_loop(listenMethod, server, localMethod, localSource);
@@ -101,13 +110,14 @@ void handle_client(int client, int localMethod, const char * localSource) {
     }
     free(username);
     free(password);
-    // TODO: open the socket here and read the data from it
+
     int localClient = connect_method(localMethod, localSource);
     if (localClient < 0) {
         close(client);
         fprintf(stderr, "error: failed to connect locally\n");
         return;
     }
+    
     char * xmlString = (char *)malloc(xmlLength + 1);
     memcpy(xmlString, xmlBuffer, xmlLength);
     xmlString[xmlLength] = 0;
@@ -119,8 +129,26 @@ void handle_client(int client, int localMethod, const char * localSource) {
     FILE * localFp = fdopen(localClient, "r+");
     fwrite(request, 1, requestLength, localFp);
     free(request);
-    // TODO: read response here
+    
+    int statusCode = 0;
+    int contentLength = 0;
+    if (http_response_read(localFp, &statusCode, &contentLength) < 0) {
+        fclose(localFp);
+        close(client);
+        fprintf(stderr, "error: failed to read response header\n");
+        return;
+    }
+    
+    char * responseBody = (char *)malloc(contentLength + 1);
+    size_t count = fread(responseBody, 1, contentLength, localFp);
+    if (count == contentLength) {
+        client_protocol_write_response(client, responseBody, count);
+    } else {
+        fprintf(stderr, "error: failed to read response\n");
+    }
+    
     fclose(localFp);
+    close(client);
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
