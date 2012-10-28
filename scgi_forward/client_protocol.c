@@ -24,16 +24,16 @@ int client_protocol_read_request(int fd, char ** user, char ** pass, void ** xml
             if (!kb_decode_read_type(context, &subType, &subTypeNumber)) {
                 goto failureHandler;
             }
-            if (subTypeNumber != 5) return -1; // ensure data
+            if (subTypeNumber != 5) goto failureHandler; // ensure data
             size_t dataLen = 0;
-            void * buffer = kb_decode_data(context, subType, &xmlLen);
+            void * buffer = kb_decode_data(context, subType, xml_len);
             if (!buffer) {
                 goto failureHandler;
             }
             *xml = buffer;
             hasXml = 1;
         } else if ((strcmp(userKey, "user") == 0 && !hasUser) || (strcmp(userKey, "pass") == 0 && !hasPass)) {
-            int isUserKey == strcmp(userKey, "user") == 0;
+            int isUserKey = strcmp(userKey, "user") == 0;
             free(userKey);
             // read string
             if (!kb_decode_read_type(context, &subType, &subTypeNumber)) {
