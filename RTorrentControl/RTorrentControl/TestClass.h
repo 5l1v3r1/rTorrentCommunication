@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ANRPCSession.h"
-#import "ANRTorrentInfoList.h"
-#import "ANRTorrentLoad.h"
+#import "ANRTorrentOperation.h"
 
 @interface TestClass : NSObject <ANRPCSessionDelegate> {
     ANRPCSession * theSession;

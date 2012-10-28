@@ -7,12 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA1A2FF2163DB37F0084FCEE /* ANRTorrentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FEF163DB37F0084FCEE /* ANRTorrentInfo.m */; };
-		FA1A2FF3163DB37F0084FCEE /* ANRTorrentInfoList.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FF1163DB37F0084FCEE /* ANRTorrentInfoList.m */; };
-		FA1A2FF6163DB38D0084FCEE /* ANRTorrentStart.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FF5163DB38D0084FCEE /* ANRTorrentStart.m */; };
-		FA1A2FF9163DB4550084FCEE /* ANRTorrentStop.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FF8163DB4550084FCEE /* ANRTorrentStop.m */; };
-		FA1A2FFC163DB4F10084FCEE /* ANRTorrentLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FFB163DB4F10084FCEE /* ANRTorrentLoad.m */; };
-		FA1A2FFF163DB6AA0084FCEE /* ANRTorrentErase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A2FFE163DB6AA0084FCEE /* ANRTorrentErase.m */; };
+		FA1A3091163DC4F30084FCEE /* ANRTorrentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */; };
+		FA1A3092163DC4F30084FCEE /* ANRTorrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */; };
 		FAD84C65163D9684008A132A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD84C64163D9684008A132A /* Foundation.framework */; };
 		FAD84C68163D9684008A132A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD84C67163D9684008A132A /* main.m */; };
 		FAD84C6C163D9684008A132A /* RTorrentControl.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = FAD84C6B163D9684008A132A /* RTorrentControl.1 */; };
@@ -49,18 +45,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		FA1A2FEE163DB37F0084FCEE /* ANRTorrentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentInfo.h; sourceTree = "<group>"; };
-		FA1A2FEF163DB37F0084FCEE /* ANRTorrentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentInfo.m; sourceTree = "<group>"; };
-		FA1A2FF0163DB37F0084FCEE /* ANRTorrentInfoList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentInfoList.h; sourceTree = "<group>"; };
-		FA1A2FF1163DB37F0084FCEE /* ANRTorrentInfoList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentInfoList.m; sourceTree = "<group>"; };
-		FA1A2FF4163DB38D0084FCEE /* ANRTorrentStart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentStart.h; sourceTree = "<group>"; };
-		FA1A2FF5163DB38D0084FCEE /* ANRTorrentStart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentStart.m; sourceTree = "<group>"; };
-		FA1A2FF7163DB4550084FCEE /* ANRTorrentStop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentStop.h; sourceTree = "<group>"; };
-		FA1A2FF8163DB4550084FCEE /* ANRTorrentStop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentStop.m; sourceTree = "<group>"; };
-		FA1A2FFA163DB4F10084FCEE /* ANRTorrentLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentLoad.h; sourceTree = "<group>"; };
-		FA1A2FFB163DB4F10084FCEE /* ANRTorrentLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentLoad.m; sourceTree = "<group>"; };
-		FA1A2FFD163DB6AA0084FCEE /* ANRTorrentErase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentErase.h; sourceTree = "<group>"; };
-		FA1A2FFE163DB6AA0084FCEE /* ANRTorrentErase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentErase.m; sourceTree = "<group>"; };
+		FA1A308D163DC4F30084FCEE /* ANRTorrentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentInfo.h; sourceTree = "<group>"; };
+		FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentInfo.m; sourceTree = "<group>"; };
+		FA1A308F163DC4F30084FCEE /* ANRTorrentOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentOperation.h; sourceTree = "<group>"; };
+		FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentOperation.m; sourceTree = "<group>"; };
 		FAD84C60163D9684008A132A /* RTorrentControl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RTorrentControl; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD84C64163D9684008A132A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FAD84C67163D9684008A132A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -122,18 +110,10 @@
 		FA1A2FED163DB37F0084FCEE /* RTorrent */ = {
 			isa = PBXGroup;
 			children = (
-				FA1A2FEE163DB37F0084FCEE /* ANRTorrentInfo.h */,
-				FA1A2FEF163DB37F0084FCEE /* ANRTorrentInfo.m */,
-				FA1A2FF0163DB37F0084FCEE /* ANRTorrentInfoList.h */,
-				FA1A2FF1163DB37F0084FCEE /* ANRTorrentInfoList.m */,
-				FA1A2FF4163DB38D0084FCEE /* ANRTorrentStart.h */,
-				FA1A2FF5163DB38D0084FCEE /* ANRTorrentStart.m */,
-				FA1A2FF7163DB4550084FCEE /* ANRTorrentStop.h */,
-				FA1A2FF8163DB4550084FCEE /* ANRTorrentStop.m */,
-				FA1A2FFA163DB4F10084FCEE /* ANRTorrentLoad.h */,
-				FA1A2FFB163DB4F10084FCEE /* ANRTorrentLoad.m */,
-				FA1A2FFD163DB6AA0084FCEE /* ANRTorrentErase.h */,
-				FA1A2FFE163DB6AA0084FCEE /* ANRTorrentErase.m */,
+				FA1A308D163DC4F30084FCEE /* ANRTorrentInfo.h */,
+				FA1A308E163DC4F30084FCEE /* ANRTorrentInfo.m */,
+				FA1A308F163DC4F30084FCEE /* ANRTorrentOperation.h */,
+				FA1A3090163DC4F30084FCEE /* ANRTorrentOperation.m */,
 			);
 			path = RTorrent;
 			sourceTree = "<group>";
@@ -314,12 +294,8 @@
 				FAD84CB7163DA06D008A132A /* XMLRPCResponse.m in Sources */,
 				FAD84CBE163DA25C008A132A /* ANRPCSession.m in Sources */,
 				FAD84CC1163DA4DA008A132A /* TestClass.m in Sources */,
-				FA1A2FF2163DB37F0084FCEE /* ANRTorrentInfo.m in Sources */,
-				FA1A2FF3163DB37F0084FCEE /* ANRTorrentInfoList.m in Sources */,
-				FA1A2FF6163DB38D0084FCEE /* ANRTorrentStart.m in Sources */,
-				FA1A2FF9163DB4550084FCEE /* ANRTorrentStop.m in Sources */,
-				FA1A2FFC163DB4F10084FCEE /* ANRTorrentLoad.m in Sources */,
-				FA1A2FFF163DB6AA0084FCEE /* ANRTorrentErase.m in Sources */,
+				FA1A3091163DC4F30084FCEE /* ANRTorrentInfo.m in Sources */,
+				FA1A3092163DC4F30084FCEE /* ANRTorrentOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

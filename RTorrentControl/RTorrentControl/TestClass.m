@@ -13,8 +13,8 @@
 - (void)start {
     theSession = [[ANRPCSession alloc] initWithHost:@"107.22.194.29" port:9082 username:@"root" password:@"rtorrenthacks"];
     theSession.delegate = self;
-    ANRTorrentInfoList * list = [[ANRTorrentInfoList alloc] init];
-    ANRTorrentLoad * load = [[ANRTorrentLoad alloc] initWithURL:[NSURL URLWithString:@"http://torrents.thepiratebay.se/5659318/American_Poop_(The_Connecticut_Poop_Movie).5659318.TPB.torrent"]];
+    id list = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationList arguments:nil];
+    id load = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationLoad arguments:@[@"http://torrents.thepiratebay.se/5659318/American_Poop_(The_Connecticut_Poop_Movie).5659318.TPB.torrent"]];
     [theSession pushCall:load];
     [theSession pushCall:list];
 }
