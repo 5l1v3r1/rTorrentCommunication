@@ -48,7 +48,7 @@ int respond_error(FILE * fp, int code, const char * message) {
 
 int respond_success(FILE * fp, long long length) {
     char str[32];
-    fprintf(str, "%llu", length);
+    sprintf(str, "%llu", length);
     return respond_error(fp, 0, str);
 }
 
