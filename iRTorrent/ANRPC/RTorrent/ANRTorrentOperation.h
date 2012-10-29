@@ -15,6 +15,7 @@ typedef enum {
     ANRTorrentOperationLoad,
     ANRTorrentOperationStart,
     ANRTorrentOperationStop,
+    ANRTorrentOperationClose,
     ANRTorrentOperationList
 } ANRTorrentOperationType;
 

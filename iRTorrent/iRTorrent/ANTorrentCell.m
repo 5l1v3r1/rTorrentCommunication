@@ -24,11 +24,11 @@
     return self;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    UIColor * textColor = selected ? [UIColor whiteColor] : [UIColor blackColor];
+    cellView.titleLabel.textColor = textColor;
+    cellView.downloadStatus.textColor = textColor;
 }
 
 @end

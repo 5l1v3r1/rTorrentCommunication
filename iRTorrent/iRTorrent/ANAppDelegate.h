@@ -12,8 +12,8 @@
 
 @interface ANAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) ANRootViewController *viewController;
+@property (strong, nonatomic) UIWindow * window;
+@property (strong, nonatomic) UINavigationController * navigationController;
+@property (strong, nonatomic) ANRootViewController * viewController;
 
 @end

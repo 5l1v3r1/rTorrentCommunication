@@ -11,7 +11,7 @@
 @interface ANRTorrentInfo : NSObject {
     NSString * torrentHash;
     NSString * baseDirectory;
-    NSString * basePath;
+    NSString * baseFile;
     UInt64 bytesDone;
     UInt64 totalBytes;
     NSString * name;
@@ -35,5 +35,6 @@
 @property (nonatomic, strong) NSString * state;
 
 - (id)initWithArray:(NSArray *)fields;
+- (BOOL)isEqualToInfo:(ANRTorrentInfo *)info;
 
 @end

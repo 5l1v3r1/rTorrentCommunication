@@ -50,8 +50,8 @@
         downloadStatus.frame = CGRectMake(42, 45, frame.size.width - 52, 16);
         titleLabel.numberOfLines = 2;
     } else {
-        titleLabel.frame = CGRectMake(42, 13, frame.size.width - 52, 18);
-        downloadStatus.frame = CGRectMake(42, 39, frame.size.width - 52, 16);
+        titleLabel.frame = CGRectMake(42, 5, frame.size.width - 52, 18);
+        downloadStatus.frame = CGRectMake(42, 25, frame.size.width - 52, 16);
         titleLabel.numberOfLines = 1;
     }
 }

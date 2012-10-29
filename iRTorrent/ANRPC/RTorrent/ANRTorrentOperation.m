@@ -28,7 +28,7 @@
         NSString * viewStr = view && [view isKindOfClass:[NSString class]] ? view : @"main";
         [request setMethod:@"d.multicall" withParameters:@[viewStr, @"d.get_hash=", @"d.get_directory=", @"d.get_base_path=", @"d.get_completed_bytes=", @"d.get_size_bytes=", @"d.get_name=", @"d.get_up_rate=", @"d.get_down_rate=", @"d.get_up_total=", @"d.get_down_total=", @"d.get_state="]];
     } else {
-        NSArray * names = @[@"d.erase", @"load", @"d.start", @"d.stop"];
+        NSArray * names = @[@"d.erase", @"load", @"d.start", @"d.stop", @"d.close"];
         NSString * name = [names objectAtIndex:type];
         [request setMethod:name withParameters:arguments];
     }

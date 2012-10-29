@@ -40,6 +40,9 @@
 		FA1A3087163DC34C0084FCEE /* ANRTorrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3086163DC34C0084FCEE /* ANRTorrentOperation.m */; };
 		FA1A30A1163DC91E0084FCEE /* off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1A309F163DC91E0084FCEE /* off@2x.png */; };
 		FA1A30A2163DC91E0084FCEE /* on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1A30A0163DC91E0084FCEE /* on@2x.png */; };
+		FA880885163DCC6A001BDAD5 /* ANTorrentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */; };
+		FA880889163DD60C001BDAD5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA880888163DD60C001BDAD5 /* QuartzCore.framework */; };
+		FA880894163DDDB8001BDAD5 /* ANAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA880893163DDDB8001BDAD5 /* ANAddViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +109,11 @@
 		FA1A3086163DC34C0084FCEE /* ANRTorrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentOperation.m; sourceTree = "<group>"; };
 		FA1A309F163DC91E0084FCEE /* off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "off@2x.png"; sourceTree = "<group>"; };
 		FA1A30A0163DC91E0084FCEE /* on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "on@2x.png"; sourceTree = "<group>"; };
+		FA880883163DCC6A001BDAD5 /* ANTorrentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANTorrentViewController.h; sourceTree = "<group>"; };
+		FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANTorrentViewController.m; sourceTree = "<group>"; };
+		FA880888163DD60C001BDAD5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FA880892163DDDB8001BDAD5 /* ANAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddViewController.h; sourceTree = "<group>"; };
+		FA880893163DDDB8001BDAD5 /* ANAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA880889163DD60C001BDAD5 /* QuartzCore.framework in Frameworks */,
 				FA1A3010163DB73C0084FCEE /* UIKit.framework in Frameworks */,
 				FA1A3012163DB73C0084FCEE /* Foundation.framework in Frameworks */,
 				FA1A3014163DB73C0084FCEE /* CoreGraphics.framework in Frameworks */,
@@ -145,6 +154,7 @@
 		FA1A300E163DB73C0084FCEE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA880888163DD60C001BDAD5 /* QuartzCore.framework */,
 				FA1A300F163DB73C0084FCEE /* UIKit.framework */,
 				FA1A3011163DB73C0084FCEE /* Foundation.framework */,
 				FA1A3013163DB73C0084FCEE /* CoreGraphics.framework */,
@@ -155,14 +165,15 @@
 		FA1A3015163DB73C0084FCEE /* iRTorrent */ = {
 			isa = PBXGroup;
 			children = (
+				FA880887163DCC73001BDAD5 /* Table View */,
 				FA1A301E163DB73C0084FCEE /* ANAppDelegate.h */,
 				FA1A301F163DB73C0084FCEE /* ANAppDelegate.m */,
 				FA1A3027163DB73C0084FCEE /* ANRootViewController.h */,
 				FA1A3028163DB73C0084FCEE /* ANRootViewController.m */,
-				FA1A3082163DBDDC0084FCEE /* ANTorrentCell.h */,
-				FA1A3083163DBDDC0084FCEE /* ANTorrentCell.m */,
-				FA1A307F163DBCB90084FCEE /* ANTorrentCellView.h */,
-				FA1A3080163DBCB90084FCEE /* ANTorrentCellView.m */,
+				FA880883163DCC6A001BDAD5 /* ANTorrentViewController.h */,
+				FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */,
+				FA880892163DDDB8001BDAD5 /* ANAddViewController.h */,
+				FA880893163DDDB8001BDAD5 /* ANAddViewController.m */,
 				FA1A3016163DB73C0084FCEE /* Supporting Files */,
 			);
 			path = iRTorrent;
@@ -253,6 +264,17 @@
 				FA1A3066163DB74A0084FCEE /* XMLRPCResponse.m */,
 			);
 			path = XMLRPC;
+			sourceTree = "<group>";
+		};
+		FA880887163DCC73001BDAD5 /* Table View */ = {
+			isa = PBXGroup;
+			children = (
+				FA1A3082163DBDDC0084FCEE /* ANTorrentCell.h */,
+				FA1A3083163DBDDC0084FCEE /* ANTorrentCell.m */,
+				FA1A307F163DBCB90084FCEE /* ANTorrentCellView.h */,
+				FA1A3080163DBCB90084FCEE /* ANTorrentCellView.m */,
+			);
+			name = "Table View";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -347,6 +369,8 @@
 				FA1A3081163DBCB90084FCEE /* ANTorrentCellView.m in Sources */,
 				FA1A3084163DBDDC0084FCEE /* ANTorrentCell.m in Sources */,
 				FA1A3087163DC34C0084FCEE /* ANRTorrentOperation.m in Sources */,
+				FA880885163DCC6A001BDAD5 /* ANTorrentViewController.m in Sources */,
+				FA880894163DDDB8001BDAD5 /* ANAddViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,6 +479,7 @@
 				FA1A3031163DB73C0084FCEE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

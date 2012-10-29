@@ -43,4 +43,14 @@
     return [NSString stringWithFormat:@"<ANRTorrentInfo: %@ - (%lu of %lu) - %@>", name, (unsigned long)bytesDone, (unsigned long)totalBytes, state];
 }
 
+- (BOOL)isEqualToInfo:(ANRTorrentInfo *)info {
+    NSArray * myStrings = @[torrentHash, baseDirectory, baseFile, name, state];
+    NSArray * itsStrings = @[info.torrentHash, info.baseDirectory, info.baseFile, info.name, info.state];
+    if (![myStrings isEqualToArray:itsStrings]) return NO;
+    if (bytesDone != info.bytesDone || totalBytes != info.totalBytes) return NO;
+    if (uploadRate != info.uploadRate || downRate != info.downRate) return NO;
+    if (uploadTotal != info.uploadTotal || downloadTotal != info.downloadTotal) return NO;
+    return YES;
+}
+
 @end

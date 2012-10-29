@@ -14,7 +14,7 @@
 void print_usage(const char * name);
 
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password);
-void handle_client(int client, int localMethod, const char * localSource, const char * username, const char * password);
+int handle_client(int client, int localMethod, const char * localSource, const char * username, const char * password);
 
 char * generate_request(const char * body, size_t * lengthOut);
 
@@ -106,20 +106,25 @@ int server_main_loop(int serverMethod, int server, int localMethod, const char *
         if (fork()) {
             close(client);
         } else {
-            handle_client(client, localMethod, localSource, username, password);
+            while (1) {
+                if (handle_client(client, localMethod, localSource, username, password) < 0) {
+                    break;
+                }
+            }
+            exit(0);
         }
     }
     return 0;
 }
 
-void handle_client(int client, int localMethod, const char * localSource, const char * usernameRight, const char * passwordRight) {
+int handle_client(int client, int localMethod, const char * localSource, const char * usernameRight, const char * passwordRight) {
     char * username, * password;
     void * xmlBuffer;
     size_t xmlLength;
     if (client_protocol_read_request(client, &username, &password, &xmlBuffer, &xmlLength) < 0) {
         close(client);
         fprintf(stderr, "error: invalid client request\n");
-        return;
+        return -1;
     }
     if (strcmp(username, usernameRight) != 0 || strcmp(password, passwordRight) != 0) {
         fprintf(stderr, "error: got incorrect login\n");
@@ -127,7 +132,7 @@ void handle_client(int client, int localMethod, const char * localSource, const 
         free(password);
         free(xmlBuffer);
         close(client);
-        return;
+        return -1;
     }
     free(username);
     free(password);
@@ -136,7 +141,7 @@ void handle_client(int client, int localMethod, const char * localSource, const 
     if (localClient < 0) {
         close(client);
         fprintf(stderr, "error: failed to connect locally\n");
-        return;
+        return -1;
     }
     
     char * xmlString = (char *)malloc(xmlLength + 1);
@@ -157,7 +162,7 @@ void handle_client(int client, int localMethod, const char * localSource, const 
         fclose(localFp);
         close(client);
         fprintf(stderr, "error: failed to read response header\n");
-        return;
+        return -1;
     }
     
     char * responseBody = (char *)malloc(contentLength + 1);
@@ -169,7 +174,7 @@ void handle_client(int client, int localMethod, const char * localSource, const 
     }
     
     fclose(localFp);
-    close(client);
+    return 0;
 }
 
 char * generate_request(const char * body, size_t * lengthOut) {
