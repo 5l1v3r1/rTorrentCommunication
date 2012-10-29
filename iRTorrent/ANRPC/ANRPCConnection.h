@@ -18,10 +18,14 @@
     UInt16 port;
     NSString * username;
     NSString * password;
-    NSData * request;
+    
+    int fd;
 }
 
-- (id)initWithHost:(NSString *)aHost port:(UInt16)aPort username:(NSString *)aUsername password:(NSString *)aPassword request:(NSData *)aRequest;
-- (NSData *)callSynchronously:(NSError **)error;
+- (id)initWithHost:(NSString *)aHost port:(UInt16)aPort username:(NSString *)aUsername password:(NSString *)aPassword;
+
+- (BOOL)connect:(NSError **)error;
+- (NSData *)sendSynchronousRequest:(NSData *)request error:(NSError **)error;
+- (void)disconnect;
 
 @end

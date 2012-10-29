@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @class ANRootViewController;
+@class ANDownloadsViewController;
 
 @interface ANAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow * window;
 @property (strong, nonatomic) UINavigationController * navigationController;
 @property (strong, nonatomic) ANRootViewController * viewController;
+@property (strong, nonatomic) UINavigationController * downloadsNavigation;
+@property (strong, nonatomic) ANDownloadsViewController * downloadsViewController;
+@property (strong, nonatomic) UITabBarController * tabBar;
 
 @end

@@ -29,6 +29,7 @@
     
     NSThread * backgroundThread;
     dispatch_queue_t mainQueue;
+    ANRPCConnection * connection;
 }
 
 @property (nonatomic, weak) id<ANRPCSessionDelegate> delegate;

@@ -9,17 +9,29 @@
 #import "ANAppDelegate.h"
 
 #import "ANRootViewController.h"
+#import "ANDownloadsViewController.h"
 
 @implementation ANAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ANRootViewController alloc] init];
+    self.downloadsViewController = [[ANDownloadsViewController alloc] init];
+    
     self.navigationController = [[UINavigationController alloc] init];
+    self.navigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Torrents"
+                                                                         image:[UIImage imageNamed:@"torrent"]
+                                                                           tag:1];
+    
+    self.downloadsNavigation = [[UINavigationController alloc] init];
+    self.downloadsNavigation.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemDownloads tag:0];
+
+    self.tabBar = [[UITabBarController alloc] init];
+    self.tabBar.viewControllers = @[self.navigationController, self.downloadsNavigation];
     [self.navigationController pushViewController:self.viewController animated:NO];
-    self.window.rootViewController = self.navigationController;
+    [self.downloadsNavigation pushViewController:self.downloadsViewController animated:NO];
+    self.window.rootViewController = self.tabBar;
     [self.window makeKeyAndVisible];
     return YES;
 }

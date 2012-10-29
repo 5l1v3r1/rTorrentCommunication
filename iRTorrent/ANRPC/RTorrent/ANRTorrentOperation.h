@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ANRPCCall.h"
 #import "ANRTorrentInfo.h"
+#import "ANRTorrentFile.h"
 
 typedef enum {
     ANRTorrentOperationErase = 0,
@@ -16,7 +17,9 @@ typedef enum {
     ANRTorrentOperationStart,
     ANRTorrentOperationStop,
     ANRTorrentOperationClose,
-    ANRTorrentOperationList
+    ANRTorrentOperationSetPriority,
+    ANRTorrentOperationList,
+    ANRTorrentOperationListFiles
 } ANRTorrentOperationType;
 
 @interface ANRTorrentOperation : NSObject <ANRPCCall> {

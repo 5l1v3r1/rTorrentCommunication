@@ -12,6 +12,7 @@
 #import "ANTorrentCell.h"
 #import "ANTorrentViewController.h"
 #import "ANAddViewController.h"
+#import "NSNumber+FileSize.h"
 
 @interface ANRootViewController : UITableViewController <ANRPCSessionDelegate, ANTorrentViewControllerDelegate, ANAddViewControllerDelegate> {
     ANRPCSession * session;
@@ -24,8 +25,11 @@
     ANTorrentViewController * activeTorrentVC;
 }
 
+- (void)createRefreshTimer;
+
 - (void)addPressed:(id)sender;
 - (void)refreshItems:(id)sender;
+- (void)fileViewSetPriority:(NSNotification *)notification;
 
 - (void)intelligentlyReloadTable:(NSArray *)newList;
 

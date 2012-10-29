@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ANRTorrentInfo.h"
+#import "ANTorrentDirViewController.h"
+#import "ANLabelHeader.h"
+#import "NSNumber+FileSize.h"
 
 @class ANTorrentViewController;
 
@@ -23,9 +26,10 @@
     __weak id<ANTorrentViewControllerDelegate> delegate;
     ANRTorrentInfo * torrentInfo;
     
-    UILabel * torrentName;
     UIBarButtonItem * startButton;
     UIBarButtonItem * stopButton;
+    
+    ANRTorrentDirectory * rootDirectory;
 }
 
 @property (nonatomic, readonly) ANRTorrentInfo * torrentInfo;
@@ -33,6 +37,7 @@
 
 - (id)initWithTorrentInfo:(ANRTorrentInfo *)info;
 - (void)updateWithTorrentInfo:(ANRTorrentInfo *)newInfo;
+- (void)fetchedTorrentRoot:(ANRTorrentDirectory *)root;
 
 - (void)startPressed:(id)sender;
 - (void)stopPressed:(id)sender;

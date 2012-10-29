@@ -12,6 +12,7 @@
 
 - (void)backgroundThread;
 - (void)runCall:(id)sender;
+- (NSData *)attemptExecution:(NSData *)request error:(NSError **)error;
 
 @end
 
@@ -49,6 +50,8 @@
             [[NSRunLoop currentRunLoop] run];
             [NSThread sleepForTimeInterval:0.1];
         }
+        [connection disconnect];
+        connection = nil;
     }
 }
 
@@ -57,22 +60,21 @@
     NSMutableArray * responses = [NSMutableArray array];
     for (XMLRPCRequest * request in requests) {
         NSData * data = [[request body] dataUsingEncoding:NSUTF8StringEncoding];
-        ANRPCConnection * conn = [[ANRPCConnection alloc] initWithHost:host
-                                                                  port:port
-                                                              username:username
-                                                              password:password
-                                                               request:data];
         NSError * error = nil;
-        NSData * result = [conn callSynchronously:&error];
-        if (error || !result) {
-            dispatch_sync(mainQueue, ^{
-                if ([delegate respondsToSelector:@selector(rpcSession:call:failedWithError:)]) {
-                    [delegate rpcSession:self call:call failedWithError:error];
-                }
-            });
-            return;
+        NSData * response = nil;
+        // if we are not connected, try to connect; otherwise, try on the existing
+        // connection, and if this fails then create a new connection.
+        if (!connection) {
+            response = [self attemptExecution:data error:&error];
+        } else {
+            response = [self attemptExecution:data error:&error];
+            if (!response) {
+                [connection disconnect];
+                connection = nil;
+                response = [self attemptExecution:data error:&error];
+            }
         }
-        XMLRPCResponse * resp = [[XMLRPCResponse alloc] initWithData:result];
+        XMLRPCResponse * resp = [[XMLRPCResponse alloc] initWithData:response];
         if (!resp) {
             NSError * err = [NSError errorWithDomain:@"ANRPCSession" code:1
                                             userInfo:@{NSLocalizedDescriptionKey: @"Invalid response"}];
@@ -91,6 +93,20 @@
             [delegate rpcSession:self call:call gotResponse:object];
         }
     });
+}
+
+- (NSData *)attemptExecution:(NSData *)request error:(NSError **)error {
+    if (!connection) {
+        connection = [[ANRPCConnection alloc] initWithHost:host
+                                                      port:port
+                                                  username:username
+                                                  password:password];
+        if (![connection connect:error]) {
+            connection = nil;
+        }
+    }
+    NSData * result = connection ? [connection sendSynchronousRequest:request error:error] : nil;
+    return result;
 }
 
 @end

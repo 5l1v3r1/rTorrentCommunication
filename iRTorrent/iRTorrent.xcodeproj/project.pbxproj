@@ -40,9 +40,17 @@
 		FA1A3087163DC34C0084FCEE /* ANRTorrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3086163DC34C0084FCEE /* ANRTorrentOperation.m */; };
 		FA1A30A1163DC91E0084FCEE /* off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1A309F163DC91E0084FCEE /* off@2x.png */; };
 		FA1A30A2163DC91E0084FCEE /* on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1A30A0163DC91E0084FCEE /* on@2x.png */; };
+		FA366368163ED80300613D90 /* ANRTorrentFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA366367163ED80300613D90 /* ANRTorrentFile.m */; };
 		FA880885163DCC6A001BDAD5 /* ANTorrentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */; };
 		FA880889163DD60C001BDAD5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA880888163DD60C001BDAD5 /* QuartzCore.framework */; };
 		FA880894163DDDB8001BDAD5 /* ANAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA880893163DDDB8001BDAD5 /* ANAddViewController.m */; };
+		FAD8E0A1163EE654002338F0 /* ANRTorrentDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0A0163EE654002338F0 /* ANRTorrentDirectory.m */; };
+		FAD8E0A5163EE860002338F0 /* ANTorrentDirViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0A4163EE860002338F0 /* ANTorrentDirViewController.m */; };
+		FAD8E0A8163EF49D002338F0 /* ANTorrentFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0A7163EF49D002338F0 /* ANTorrentFileViewController.m */; };
+		FAD8E0AF163EFF21002338F0 /* ANLabelHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0AE163EFF21002338F0 /* ANLabelHeader.m */; };
+		FAD8E0B4163F0548002338F0 /* NSNumber+FileSize.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0B3163F0548002338F0 /* NSNumber+FileSize.m */; };
+		FAD8E0B7163F09ED002338F0 /* ANDownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD8E0B6163F09ED002338F0 /* ANDownloadsViewController.m */; };
+		FAD8E0BD163F0D30002338F0 /* torrent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FAD8E0BC163F0D30002338F0 /* torrent@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,11 +117,26 @@
 		FA1A3086163DC34C0084FCEE /* ANRTorrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentOperation.m; sourceTree = "<group>"; };
 		FA1A309F163DC91E0084FCEE /* off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "off@2x.png"; sourceTree = "<group>"; };
 		FA1A30A0163DC91E0084FCEE /* on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "on@2x.png"; sourceTree = "<group>"; };
+		FA366366163ED80300613D90 /* ANRTorrentFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentFile.h; sourceTree = "<group>"; };
+		FA366367163ED80300613D90 /* ANRTorrentFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentFile.m; sourceTree = "<group>"; };
 		FA880883163DCC6A001BDAD5 /* ANTorrentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANTorrentViewController.h; sourceTree = "<group>"; };
 		FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANTorrentViewController.m; sourceTree = "<group>"; };
 		FA880888163DD60C001BDAD5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FA880892163DDDB8001BDAD5 /* ANAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddViewController.h; sourceTree = "<group>"; };
 		FA880893163DDDB8001BDAD5 /* ANAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddViewController.m; sourceTree = "<group>"; };
+		FAD8E09F163EE654002338F0 /* ANRTorrentDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentDirectory.h; sourceTree = "<group>"; };
+		FAD8E0A0163EE654002338F0 /* ANRTorrentDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentDirectory.m; sourceTree = "<group>"; };
+		FAD8E0A3163EE860002338F0 /* ANTorrentDirViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANTorrentDirViewController.h; sourceTree = "<group>"; };
+		FAD8E0A4163EE860002338F0 /* ANTorrentDirViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANTorrentDirViewController.m; sourceTree = "<group>"; };
+		FAD8E0A6163EF49D002338F0 /* ANTorrentFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANTorrentFileViewController.h; sourceTree = "<group>"; };
+		FAD8E0A7163EF49D002338F0 /* ANTorrentFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANTorrentFileViewController.m; sourceTree = "<group>"; };
+		FAD8E0AD163EFF21002338F0 /* ANLabelHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANLabelHeader.h; sourceTree = "<group>"; };
+		FAD8E0AE163EFF21002338F0 /* ANLabelHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANLabelHeader.m; sourceTree = "<group>"; };
+		FAD8E0B2163F0548002338F0 /* NSNumber+FileSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+FileSize.h"; sourceTree = "<group>"; };
+		FAD8E0B3163F0548002338F0 /* NSNumber+FileSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+FileSize.m"; sourceTree = "<group>"; };
+		FAD8E0B5163F09ED002338F0 /* ANDownloadsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANDownloadsViewController.h; sourceTree = "<group>"; };
+		FAD8E0B6163F09ED002338F0 /* ANDownloadsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANDownloadsViewController.m; sourceTree = "<group>"; };
+		FAD8E0BC163F0D30002338F0 /* torrent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "torrent@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +188,8 @@
 		FA1A3015163DB73C0084FCEE /* iRTorrent */ = {
 			isa = PBXGroup;
 			children = (
+				FAD8E0BE163F0E58002338F0 /* Downloads */,
+				FAD8E0B1163F0532002338F0 /* Util */,
 				FA880887163DCC73001BDAD5 /* Table View */,
 				FA1A301E163DB73C0084FCEE /* ANAppDelegate.h */,
 				FA1A301F163DB73C0084FCEE /* ANAppDelegate.m */,
@@ -174,6 +199,12 @@
 				FA880884163DCC6A001BDAD5 /* ANTorrentViewController.m */,
 				FA880892163DDDB8001BDAD5 /* ANAddViewController.h */,
 				FA880893163DDDB8001BDAD5 /* ANAddViewController.m */,
+				FAD8E0A3163EE860002338F0 /* ANTorrentDirViewController.h */,
+				FAD8E0A4163EE860002338F0 /* ANTorrentDirViewController.m */,
+				FAD8E0A6163EF49D002338F0 /* ANTorrentFileViewController.h */,
+				FAD8E0A7163EF49D002338F0 /* ANTorrentFileViewController.m */,
+				FAD8E0B5163F09ED002338F0 /* ANDownloadsViewController.h */,
+				FAD8E0B6163F09ED002338F0 /* ANDownloadsViewController.m */,
 				FA1A3016163DB73C0084FCEE /* Supporting Files */,
 			);
 			path = iRTorrent;
@@ -182,8 +213,10 @@
 		FA1A3016163DB73C0084FCEE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA1A307D163DB7D30084FCEE /* Settings.bundle */,
 				FA1A309F163DC91E0084FCEE /* off@2x.png */,
 				FA1A30A0163DC91E0084FCEE /* on@2x.png */,
+				FAD8E0BC163F0D30002338F0 /* torrent@2x.png */,
 				FA1A3017163DB73C0084FCEE /* iRTorrent-Info.plist */,
 				FA1A3018163DB73C0084FCEE /* InfoPlist.strings */,
 				FA1A301B163DB73C0084FCEE /* main.m */,
@@ -191,7 +224,6 @@
 				FA1A3021163DB73C0084FCEE /* Default.png */,
 				FA1A3023163DB73C0084FCEE /* Default@2x.png */,
 				FA1A3025163DB73C0084FCEE /* Default-568h@2x.png */,
-				FA1A307D163DB7D30084FCEE /* Settings.bundle */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -216,6 +248,10 @@
 				FA1A303C163DB74A0084FCEE /* ANRTorrentInfo.m */,
 				FA1A3085163DC34C0084FCEE /* ANRTorrentOperation.h */,
 				FA1A3086163DC34C0084FCEE /* ANRTorrentOperation.m */,
+				FA366366163ED80300613D90 /* ANRTorrentFile.h */,
+				FA366367163ED80300613D90 /* ANRTorrentFile.m */,
+				FAD8E09F163EE654002338F0 /* ANRTorrentDirectory.h */,
+				FAD8E0A0163EE654002338F0 /* ANRTorrentDirectory.m */,
 			);
 			path = RTorrent;
 			sourceTree = "<group>";
@@ -273,8 +309,26 @@
 				FA1A3083163DBDDC0084FCEE /* ANTorrentCell.m */,
 				FA1A307F163DBCB90084FCEE /* ANTorrentCellView.h */,
 				FA1A3080163DBCB90084FCEE /* ANTorrentCellView.m */,
+				FAD8E0AD163EFF21002338F0 /* ANLabelHeader.h */,
+				FAD8E0AE163EFF21002338F0 /* ANLabelHeader.m */,
 			);
 			name = "Table View";
+			sourceTree = "<group>";
+		};
+		FAD8E0B1163F0532002338F0 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				FAD8E0B2163F0548002338F0 /* NSNumber+FileSize.h */,
+				FAD8E0B3163F0548002338F0 /* NSNumber+FileSize.m */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		FAD8E0BE163F0E58002338F0 /* Downloads */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Downloads;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,6 +390,7 @@
 				FA1A307E163DB7D30084FCEE /* Settings.bundle in Resources */,
 				FA1A30A1163DC91E0084FCEE /* off@2x.png in Resources */,
 				FA1A30A2163DC91E0084FCEE /* on@2x.png in Resources */,
+				FAD8E0BD163F0D30002338F0 /* torrent@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +426,13 @@
 				FA1A3087163DC34C0084FCEE /* ANRTorrentOperation.m in Sources */,
 				FA880885163DCC6A001BDAD5 /* ANTorrentViewController.m in Sources */,
 				FA880894163DDDB8001BDAD5 /* ANAddViewController.m in Sources */,
+				FA366368163ED80300613D90 /* ANRTorrentFile.m in Sources */,
+				FAD8E0A1163EE654002338F0 /* ANRTorrentDirectory.m in Sources */,
+				FAD8E0A5163EE860002338F0 /* ANTorrentDirViewController.m in Sources */,
+				FAD8E0A8163EF49D002338F0 /* ANTorrentFileViewController.m in Sources */,
+				FAD8E0AF163EFF21002338F0 /* ANLabelHeader.m in Sources */,
+				FAD8E0B4163F0548002338F0 /* NSNumber+FileSize.m in Sources */,
+				FAD8E0B7163F09ED002338F0 /* ANDownloadsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

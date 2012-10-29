@@ -44,6 +44,7 @@
 }
 
 - (BOOL)isEqualToInfo:(ANRTorrentInfo *)info {
+    if (!info) return NO;
     NSArray * myStrings = @[torrentHash, baseDirectory, baseFile, name, state];
     NSArray * itsStrings = @[info.torrentHash, info.baseDirectory, info.baseFile, info.name, info.state];
     if (![myStrings isEqualToArray:itsStrings]) return NO;

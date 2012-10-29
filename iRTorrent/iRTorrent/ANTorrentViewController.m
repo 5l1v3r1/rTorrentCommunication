@@ -20,19 +20,10 @@
 - (id)initWithTorrentInfo:(ANRTorrentInfo *)info {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         CGRect frame = self.view.frame;
-        torrentName = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, frame.size.width - 20, 50)];
-        torrentName.font = [UIFont boldSystemFontOfSize:16];
-        torrentName.backgroundColor = [UIColor clearColor];
-        torrentName.lineBreakMode = NSLineBreakByCharWrapping;
-        torrentName.numberOfLines = 0;
         
-        UIView * header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 70)];
-        header.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-        header.layer.shadowColor = [[UIColor blackColor] CGColor];
-        header.layer.shadowOffset = CGSizeMake(0, 1);
-        header.layer.shadowOpacity = 0.5;
-        header.layer.shadowRadius = 5;
-        [header addSubview:torrentName];
+        ANLabelHeader * header = [[ANLabelHeader alloc] initWithWidth:frame.size.width
+                                                                 text:info.name
+                                                                 font:[UIFont boldSystemFontOfSize:16]];
         self.tableView.tableHeaderView = header;
         
         startButton = [[UIBarButtonItem alloc] initWithTitle:@"Start"
@@ -53,12 +44,23 @@
 - (void)updateWithTorrentInfo:(ANRTorrentInfo *)newInfo {
     if ([newInfo isEqualToInfo:torrentInfo]) return;
     torrentInfo = newInfo;
-    torrentName.text = torrentInfo.name;
     [self.tableView reloadData];
     if ([torrentInfo.state isEqualToString:@"0"]) {
         self.navigationItem.rightBarButtonItem = startButton;
     } else {
         self.navigationItem.rightBarButtonItem = stopButton;
+    }
+}
+
+- (void)fetchedTorrentRoot:(ANRTorrentDirectory *)root {
+    if (!rootDirectory) {
+        [self.tableView beginUpdates];
+        rootDirectory = root;
+        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:5 inSection:0]]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    } else {
+        rootDirectory = root;
     }
 }
 
@@ -89,34 +91,59 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
+    if (rootDirectory) return 6;
+    else return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 5) {
+        UITableViewCell * filesCell = [tableView dequeueReusableCellWithIdentifier:@"CellFiles"];
+        if (!filesCell) {
+            filesCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                               reuseIdentifier:@"CellFiles"];
+        }
+        filesCell.textLabel.text = @"Show Files";
+        filesCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        return filesCell;
+    }
+    
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"Cell"];
     }
+    
     NSString * key = nil, * value = nil;
     if (indexPath.row == 0) {
         key = @"State";
         value = [torrentInfo.state isEqualToString:@"0"] ? @"Inactive" : @"Active";
     } else if (indexPath.row == 1) {
         key = @"Total Size";
-        value = [NSString stringWithFormat:@"%.1f MB", (float)torrentInfo.totalBytes / 1024 / 1024];
+        value = [NSString stringWithFormat:@"%@", filesizeStringForSize(torrentInfo.totalBytes)];
     } else if (indexPath.row == 2) {
         key = @"Bytes Downloaded";
-        value = [NSString stringWithFormat:@"%.1f MB", (float)torrentInfo.bytesDone / 1024 / 1024];
+        value = [NSString stringWithFormat:@"%@", filesizeStringForSize(torrentInfo.bytesDone)];
     } else if (indexPath.row == 3) {
         key = @"Download Rate";
-        value = [NSString stringWithFormat:@"%0.2f KB/s", torrentInfo.downRate / 1024];
+        value = [NSString stringWithFormat:@"%@/s", filesizeStringForSize(torrentInfo.downRate)];
     } else if (indexPath.row == 4) {
         key = @"Upload Rate";
-        value = [NSString stringWithFormat:@"%0.2f KB/s", torrentInfo.uploadRate / 1024];
+        value = [NSString stringWithFormat:@"%@/s", filesizeStringForSize(torrentInfo.uploadRate)];
     }
     cell.detailTextLabel.text = value;
     cell.textLabel.text = key;
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row != 5) return NO;
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 5) {
+        ANTorrentDirViewController * dirView = [[ANTorrentDirViewController alloc] initWithDirectory:rootDirectory];
+        [self.navigationController pushViewController:dirView animated:YES];
+    }
 }
 
 @end

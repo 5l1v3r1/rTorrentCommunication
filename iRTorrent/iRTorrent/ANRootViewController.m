@@ -39,10 +39,11 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
                                                               action:@selector(addPressed:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
-    refreshTimer = [NSTimer scheduledTimerWithTimeInterval:5
-                                                    target:self
-                                                  selector:@selector(refreshItems:)
-                                                  userInfo:nil repeats:YES];
+    [self createRefreshTimer];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fileViewSetPriority:)
+                                                 name:ANTorrentFileViewControllerChangedPriorityNotification
+                                               object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -58,8 +59,27 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     }
 }
 
+- (void)fileViewSetPriority:(NSNotification *)notification {
+    ANTorrentFileViewController * fileVC = [notification object];
+    ANRTorrentFile * file = fileVC.torrentFile;
+    ANRTorrentInfo * info = activeTorrentVC.torrentInfo;
+    NSAssert(file != nil && info != nil, @"-fileViewSetPriority: called at inappropriate time");
+    NSArray * arguments = @[info.torrentHash, [NSNumber numberWithInt:file.fileIndex],
+                            [NSNumber numberWithInt:file.priority]];
+    ANRTorrentOperation * setPriority = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationSetPriority
+                                                                             arguments:arguments];
+    [session pushCall:setPriority];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     activeTorrentVC = nil;
+}
+
+- (void)createRefreshTimer {
+    refreshTimer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                    target:self
+                                                  selector:@selector(refreshItems:)
+                                                  userInfo:nil repeats:YES];
 }
 
 #pragma mark - Session -
@@ -79,7 +99,8 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     hasRefreshed = YES;
     hasAlerted = NO;
     if ([call isKindOfClass:[ANRTorrentOperation class]]) {
-        if ([(ANRTorrentOperation *)call type] == ANRTorrentOperationList) {
+        ANRTorrentOperation * operation = (ANRTorrentOperation *)call;
+        if (operation.type == ANRTorrentOperationList) {
             if (!torrentList) {
                 torrentList = response;
                 [self.tableView reloadData];
@@ -97,6 +118,12 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
                 if (!found) {
                     [self.navigationController popToRootViewControllerAnimated:YES];
                 }
+            }
+        } else if (operation.type == ANRTorrentOperationListFiles) {
+            NSComparisonResult x = [[operation.arguments lastObject] caseInsensitiveCompare:activeTorrentVC.torrentInfo.torrentHash];
+            if (x == NSOrderedSame) {
+                ANRTorrentDirectory * dir = [[ANRTorrentDirectory alloc] initRootWithFiles:response];
+                [activeTorrentVC fetchedTorrentRoot:dir];
             }
         } else {
             [self refreshItems:self];
@@ -121,8 +148,10 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     }
     
     ANRTorrentInfo * info = [torrentList objectAtIndex:indexPath.row];
-    NSString * status = [NSString stringWithFormat:@"%.2f of %.2f MiB",
-                         ((float)info.bytesDone / 1024.0 / 1024), ((float)info.totalBytes / 1024.0 / 1024)];
+    
+    NSString * hasStatus = filesizeStringForSize(info.bytesDone);
+    NSString * availableStatus = filesizeStringForSize(info.totalBytes);
+    NSString * status = [NSString stringWithFormat:@"%@ of %@", hasStatus, availableStatus];
     
     cell.cellView.titleLabel.text = [[torrentList objectAtIndex:indexPath.row] name];
     cell.cellView.downloadStatus.text = status;
@@ -141,6 +170,11 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     vc.delegate = self;
     [self.navigationController pushViewController:vc animated:YES];
     activeTorrentVC = vc;
+    
+    // fetch the file list
+    ANRTorrentOperation * fileList = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationListFiles
+                                                                          arguments:@[info.torrentHash]];
+    [session pushCall:fileList];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -154,6 +188,10 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
         ANRTorrentOperation * deleteOperation = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationErase
                                                                                      arguments:args];
         [session pushCall:deleteOperation];
+        
+        [refreshTimer invalidate];
+        [self createRefreshTimer];
+        
         NSMutableArray * list = [torrentList mutableCopy];
         [list removeObjectAtIndex:indexPath.row];
         torrentList = [list copy];
@@ -205,7 +243,7 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
             [editList replaceObjectAtIndex:i withObject:[newList objectAtIndex:useIndex]];
         }
     }
-    [self.tableView reloadRowsAtIndexPaths:updateIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView reloadRowsAtIndexPaths:updateIndexPaths withRowAnimation:UITableViewRowAnimationNone];
     torrentList = [editList copy];
     [self.tableView endUpdates];
 }
