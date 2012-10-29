@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "protocol.h"
 
 void handle_client(int fd, const char * user, const char * pass);
@@ -24,7 +26,7 @@ int main(int argc, const char * argv[]) {
     }
     listen(server, 5);
     while (1) {
-        int client = accept(server);
+        int client = accept(server, NULL, NULL);
         if (client < 0) {
             perror("accept");
             return 1;
@@ -46,6 +48,50 @@ void handle_client(int fd, const char * userTest, const char * passTest) {
     if (read_client_request(fp, &user, &pass, &path, &initial) < 0) {
         return;
     }
+    if (strcmp(user, userTest) != 0 || strcmp(pass, passTest) != 0) {
+        respond_error(fp, PROTOCOL_ERROR_AUTH, "Login incorrect.");
+        goto handleError;
+    }
+    struct stat info;
+    if (stat(path, &info) < 0) {
+        respond_error(fp, PROTOCOL_ERROR_NO_FILE, "Could not stat file.");
+        goto handleError;
+    }
+    if (S_ISDIR(info.st_mode)) {
+        respond_error(fp, PROTOCOL_ERROR_NOT_FILE, "Could not send directory.");
+        goto handleError;
+    }
+    if (initial > info.st_size) {
+        respond_error(fp, PROTOCOL_ERROR_INVALID_INITIAL, "Invalid initial offset.");
+        goto handleError;
+    }
+    FILE * readFile = fopen(path, "r");
+    if (!readFile) {
+        respond_error(fp, PROTOCOL_ERROR_INTERNAL, "fopen() failed");
+        goto handleError;
+    }
     
+    if (respond_success(fp, info.st_size - initial) < 0) {
+        fclose(readFile);
+        goto handleError;
+    }
+    
+    // read file from start offset
+    fseek(readFile, initial, SEEK_SET);
+    char buff[512];
+    while (!feof(readFile)) {
+        int got = fread(buff, 1, 512, readFile);
+        if (got == 0) break;
+        if (fwrite(buff, 1, got, fp) != got) {
+            break;
+        }
+    }
+    fclose(readFile);
+    
+handleError:
     fclose(fp);
+    free(user);
+    free(pass);
+    free(path);
+    return;
 }

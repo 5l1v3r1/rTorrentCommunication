@@ -46,25 +46,10 @@ int respond_error(FILE * fp, int code, const char * message) {
     return 1 + messageLen;
 }
 
-int respond_success(FILE * fp) {
-    if (fwrite("\x00", 1, 1, fp) == 1) return 1;
-    return -1;
-}
-
-int respond_send_data(FILE * fp, const void * data, size_t length) {
-    char sizeData[4];
-    if (sizeof(short) == 4) {
-        unsigned short n = htons((unsigned short)length);
-        memcpy(sizeData, &n, 4);
-    } else if (sizeof(int) == 4) {
-        unsigned int n = htons((unsigned int)length);
-        memcpy(sizeData, &n, 4);
-    } else {
-        return -1;
-    }
-    if (fwrite(sizeData, 1, 4, fp) != 4) return -1;
-    if (fwrite(data, 1, length, fp) != length) return -1;
-    return (int)length + 4;
+int respond_success(FILE * fp, long long length) {
+    char str[32];
+    fprintf(str, "%llu", length);
+    return respond_error(fp, 0, str);
 }
 
 static char * read_until_null(FILE * fp) {
@@ -77,7 +62,8 @@ static char * read_until_null(FILE * fp) {
         buff[len++] = (char)c;
     }
     if (feof(fp)) {
-        free(buff) return NULL;
+        free(buff);
+        return NULL;
     }
     buff[len] = 0;
     return buff;
