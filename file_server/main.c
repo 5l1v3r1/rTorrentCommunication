@@ -1,3 +1,9 @@
+#ifdef __linux__
+#define __USE_LARGEFILE64
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE64_SOURCE
+#endif
+
 #include <stdio.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -52,8 +58,13 @@ void handle_client(int fd, const char * userTest, const char * passTest) {
         respond_error(fp, PROTOCOL_ERROR_AUTH, "Login incorrect.");
         goto handleError;
     }
-    struct stat info;
+#ifdef __linux__
+    struct stat64 info;
+    if (stat64(path, &info) < 0) {
+#else
+    struct stat info
     if (stat(path, &info) < 0) {
+#endif
         respond_error(fp, PROTOCOL_ERROR_NO_FILE, "Could not stat file.");
         goto handleError;
     }
@@ -65,8 +76,13 @@ void handle_client(int fd, const char * userTest, const char * passTest) {
         respond_error(fp, PROTOCOL_ERROR_INVALID_INITIAL, "Invalid initial offset.");
         goto handleError;
     }
-    FILE * readFile = fopen(path, "r");
+#ifdef __linux__
+    FILE * readFile = fopen64(path, "r");
+#else
+    FILE * readfile = fopen(path, "r");
+#endif
     if (!readFile) {
+        perror("fopen");
         respond_error(fp, PROTOCOL_ERROR_INTERNAL, "fopen() failed");
         goto handleError;
     }
