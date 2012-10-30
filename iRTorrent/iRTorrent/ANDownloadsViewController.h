@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ANTransfer.h"
+#import "ANTransferCell.h"
+#import "ANSettingsController.h"
 
-@interface ANDownloadsViewController : UITableViewController {
-    
+@interface ANDownloadsViewController : UITableViewController <ANTransferDelegate> {
+    NSMutableArray * transfers;
 }
+
+- (void)addTransfer:(ANTransfer *)aTransfer;
 
 @end

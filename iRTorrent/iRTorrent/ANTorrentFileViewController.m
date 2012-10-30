@@ -18,6 +18,7 @@
 
 - (id)initWithFile:(ANRTorrentFile *)file {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+        self.title = @"File";
         torrentFile = file;
         prioritySegment = [[UISegmentedControl alloc] initWithItems:@[@"Off", @"Normal", @"High"]];
         prioritySegment.selectedSegmentIndex = file.priority;
@@ -27,6 +28,12 @@
                                                                  text:[file.pathComponents lastObject]
                                                                  font:[UIFont boldSystemFontOfSize:16]];
         self.tableView.tableHeaderView = header;
+        
+        downloadButton = [[UIBarButtonItem alloc] initWithTitle:@"Download"
+                                                          style:UIBarButtonItemStylePlain
+                                                         target:self
+                                                         action:@selector(downloadPressed:)];
+        self.navigationItem.rightBarButtonItem = downloadButton;
     }
     return self;
 }
@@ -38,6 +45,11 @@
 - (void)segmentChanged:(id)sender {
     torrentFile.priority = (SInt8)prioritySegment.selectedSegmentIndex;
     [[NSNotificationCenter defaultCenter] postNotificationName:ANTorrentFileViewControllerChangedPriorityNotification
+                                                        object:self];
+}
+
+- (void)downloadPressed:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:ANTorrentFileViewControllerDownloadTappedNotification
                                                         object:self];
 }
 

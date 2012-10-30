@@ -13,15 +13,18 @@
 #import "NSNumber+FileSize.h"
 
 #define ANTorrentFileViewControllerChangedPriorityNotification @"ANTorrentFileViewControllerChangedPriorityNotification"
+#define ANTorrentFileViewControllerDownloadTappedNotification @"ANTorrentFileViewControllerDownloadTappedNotification"
 
 @interface ANTorrentFileViewController : UITableViewController {
     UISegmentedControl * prioritySegment;
     ANRTorrentFile * torrentFile;
+    UIBarButtonItem * downloadButton;
 }
 
 @property (readonly) ANRTorrentFile * torrentFile;
 
 - (id)initWithFile:(ANRTorrentFile *)file;
 - (void)segmentChanged:(id)sender;
+- (void)downloadPressed:(id)sender;
 
 @end
