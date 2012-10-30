@@ -37,16 +37,31 @@
         startStopButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
         [startStopButton setBackgroundImage:[UIImage imageNamed:@"start"] forState:UIControlStateNormal];
         [self addSubview:startStopButton];
+        
+        displayingButton = YES;
     }
     return self;
 }
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    [titleLabel setFrame:CGRectMake(10, 5, frame.size.width - 52, 16)];
-    [progress setFrame:CGRectMake(10, 24, frame.size.width - 52, progress.frame.size.height)];
-    [statusLabel setFrame:CGRectMake(10, 24 + progress.frame.size.height + 3, frame.size.width - 52, 16)];
-    [startStopButton setFrame:CGRectMake(frame.size.width - 27, (frame.size.height - 22) / 2, 22, 22)];
+    CGFloat subWidth = displayingButton ? 52 : 20;
+    [titleLabel setFrame:CGRectMake(10, 5, frame.size.width - subWidth, 16)];
+    [progress setFrame:CGRectMake(10, 24, frame.size.width - subWidth, progress.frame.size.height)];
+    [statusLabel setFrame:CGRectMake(10, 24 + progress.frame.size.height + 3, frame.size.width - subWidth, 16)];
+    if (displayingButton) {
+        [startStopButton setFrame:CGRectMake(frame.size.width - 27, (frame.size.height - 22) / 2, 22, 22)];
+    }
+}
+
+- (void)setHighlighted:(BOOL)flag {
+    if (flag) {
+        titleLabel.textColor = [UIColor whiteColor];
+        statusLabel.textColor = [UIColor whiteColor];
+    } else {
+        titleLabel.textColor = [UIColor blackColor];
+        statusLabel.textColor = [UIColor grayColor];
+    }
 }
 
 - (void)updateInfoForTransfer:(ANTransfer *)aTransfer {
@@ -56,6 +71,24 @@
                          filesizeStringForSize(aTransfer.hasSize),
                          filesizeStringForSize(aTransfer.totalSize)];
     [statusLabel setText:status];
+    if (aTransfer.hasSize >= aTransfer.totalSize) {
+        displayingButton = NO;
+        if ([startStopButton superview]) {
+            [startStopButton removeFromSuperview];
+            self.frame = self.frame;
+        }
+    } else {
+        displayingButton = YES;
+        if (![startStopButton superview]) {
+            [self addSubview:startStopButton];
+            self.frame = self.frame;
+        }
+        if (aTransfer.state == ANTransferStateNotRunning) {
+            [startStopButton setBackgroundImage:[UIImage imageNamed:@"start"] forState:UIControlStateNormal];
+        } else {
+            [startStopButton setBackgroundImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+        }
+    }
 }
 
 /*

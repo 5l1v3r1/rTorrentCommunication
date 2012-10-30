@@ -26,6 +26,9 @@
     ANTorrentViewController * activeTorrentVC;
 }
 
+@property (readonly) ANRPCSession * session;
+
+- (void)restartSession;
 - (void)createRefreshTimer;
 
 - (void)addPressed:(id)sender;

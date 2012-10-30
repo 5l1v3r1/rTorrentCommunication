@@ -19,6 +19,10 @@
 @implementation ANRPCSession
 
 @synthesize delegate;
+@synthesize host;
+@synthesize port;
+@synthesize username;
+@synthesize password;
 
 - (id)initWithHost:(NSString *)aHost port:(UInt16)aPort username:(NSString *)aUsername password:(NSString *)aPassword {
     if ((self = [super init])) {

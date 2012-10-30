@@ -10,11 +10,14 @@
 #import "ANTransfer.h"
 #import "ANTransferCell.h"
 #import "ANSettingsController.h"
+#import "ANFileViewController.h"
 
 @interface ANDownloadsViewController : UITableViewController <ANTransferDelegate> {
     NSMutableArray * transfers;
 }
 
 - (void)addTransfer:(ANTransfer *)aTransfer;
+- (void)downloadCellPlayPause:(NSNotification *)notification;
+- (void)saveTransfers;
 
 @end

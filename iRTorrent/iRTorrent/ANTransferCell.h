@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ANTransferCellView.h"
 
+#define ANTransferCellStartStopPressedNotification @"ANTransferCellStartStopPressedNotification"
+
 @interface ANTransferCell : UITableViewCell {
     ANTransferCellView * cellView;
 }

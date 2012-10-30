@@ -18,15 +18,13 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 
 @implementation ANRootViewController
 
+@synthesize session;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Torrents";
     
-    NSString * host = [ANSettingsController host];
-    NSString * username = [ANSettingsController username];
-    NSString * password = [ANSettingsController password];
-    session = [[ANRPCSession alloc] initWithHost:host port:9082 username:username password:password];
-    session.delegate = self;
+    [self restartSession];
     
     ANRTorrentOperation * list = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationList arguments:nil];
     [session pushCall:list];
@@ -52,6 +50,19 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)restartSession {
+    if (session) {
+        [session cancelAll];
+        session.delegate = nil;
+    }
+    hasRefreshed = YES;
+    NSString * host = [ANSettingsController host];
+    NSString * username = [ANSettingsController username];
+    NSString * password = [ANSettingsController password];
+    session = [[ANRPCSession alloc] initWithHost:host port:9082 username:username password:password];
+    session.delegate = self;
 }
 
 - (void)refreshItems:(id)sender {
@@ -87,9 +98,10 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
             path = [path stringByAppendingPathComponent:comp];
         }
     }
-    NSString * localPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%d.%d", arc4random(), arc4random()];
+    NSString * ext = [path pathExtension];
+    NSString * localPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%d.%d.%@", arc4random(), arc4random(), ext];
     ANDownloadsViewController * dvc = [(ANAppDelegate *)[UIApplication sharedApplication].delegate downloadsViewController];
-    ANTransfer * transfer = [[ANTransfer alloc] initWithLocalFile:localPath remoteFile:path];
+    ANTransfer * transfer = [[ANTransfer alloc] initWithLocalFile:localPath remoteFile:path totalSize:file.sizeBytes];
     [dvc addTransfer:transfer];
     UITabBarController * tabs = [(ANAppDelegate *)[UIApplication sharedApplication].delegate tabBar];
     [tabs setSelectedIndex:1];

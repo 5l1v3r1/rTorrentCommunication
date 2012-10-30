@@ -8,6 +8,12 @@
 
 #import "ANTransferCell.h"
 
+@interface ANTransferCell (Private)
+
+- (void)buttonPressed:(id)sender;
+
+@end
+
 @implementation ANTransferCell
 
 @synthesize cellView;
@@ -18,13 +24,27 @@
         cellView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.contentView.autoresizesSubviews = YES;
         [self.contentView addSubview:cellView];
+        [cellView.startStopButton addTarget:self
+                                     action:@selector(buttonPressed:)
+                           forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    
+    if (animated) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [cellView setHighlighted:selected];
+        }];
+    } else {
+        [cellView setHighlighted:selected];
+    }
+}
+
+- (void)buttonPressed:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:ANTransferCellStartStopPressedNotification
+                                                        object:self];
 }
 
 @end

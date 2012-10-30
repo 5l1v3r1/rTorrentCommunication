@@ -15,10 +15,12 @@
     UILabel * statusLabel;
     UILabel * titleLabel;
     UIButton * startStopButton;
+    BOOL displayingButton;
 }
 
 @property (readonly) UIButton * startStopButton;
 
 - (void)updateInfoForTransfer:(ANTransfer *)aTransfer;
+- (void)setHighlighted:(BOOL)flag;
 
 @end

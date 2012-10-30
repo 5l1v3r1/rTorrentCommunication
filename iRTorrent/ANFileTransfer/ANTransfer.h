@@ -26,11 +26,12 @@ typedef enum {
 
 @end
 
-@interface ANTransfer : NSObject {
+@interface ANTransfer : NSObject <NSCoding> {
     NSLock * stateLock;
     ANTransferState state;
     
     ANSynchronousTransfer * transfer;
+    NSFileHandle * handle;
     NSThread * backgroundThread;
     
     NSString * localPath;
@@ -57,7 +58,7 @@ typedef enum {
 @property (readonly) long long totalSize;
 @property (readonly) long long hasSize;
 
-- (id)initWithLocalFile:(NSString *)local remoteFile:(NSString *)remote;
+- (id)initWithLocalFile:(NSString *)local remoteFile:(NSString *)remote totalSize:(long long)estimate;
 - (void)startTransfer;
 - (void)cancelTransfer;
 
