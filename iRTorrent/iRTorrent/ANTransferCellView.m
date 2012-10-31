@@ -34,7 +34,7 @@
         [titleLabel setNumberOfLines:0];
         [self addSubview:titleLabel];
         
-        startStopButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 22, 22)];
+        startStopButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
         [startStopButton setBackgroundImage:[UIImage imageNamed:@"start"] forState:UIControlStateNormal];
         [self addSubview:startStopButton];
         
@@ -45,12 +45,12 @@
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    CGFloat subWidth = displayingButton ? 52 : 20;
+    CGFloat subWidth = displayingButton ? 62 : 20;
     [titleLabel setFrame:CGRectMake(10, 5, frame.size.width - subWidth, 16)];
     [progress setFrame:CGRectMake(10, 24, frame.size.width - subWidth, progress.frame.size.height)];
     [statusLabel setFrame:CGRectMake(10, 24 + progress.frame.size.height + 3, frame.size.width - subWidth, 16)];
     if (displayingButton) {
-        [startStopButton setFrame:CGRectMake(frame.size.width - 27, (frame.size.height - 22) / 2, 22, 22)];
+        [startStopButton setFrame:CGRectMake(frame.size.width - 42, (frame.size.height - 32) / 2, 32, 32)];
     }
 }
 

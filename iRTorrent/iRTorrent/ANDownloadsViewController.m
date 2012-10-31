@@ -19,11 +19,12 @@
 @implementation ANDownloadsViewController
 
 + (NSString *)downloadsSavePath {
-    return [NSString stringWithFormat:@"%@/Documents/downloads.sav", NSHomeDirectory()];
+    return [NSString stringWithFormat:@"%@/Library/downloads.sav", NSHomeDirectory()];
 }
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
+        self.title = @"Downloads";
         self.tableView.rowHeight = 58;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(downloadCellPlayPause:)

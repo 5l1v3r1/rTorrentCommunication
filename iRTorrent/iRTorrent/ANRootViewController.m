@@ -98,8 +98,7 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
             path = [path stringByAppendingPathComponent:comp];
         }
     }
-    NSString * ext = [path pathExtension];
-    NSString * localPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%d.%d.%@", arc4random(), arc4random(), ext];
+    NSString * localPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%d.%d.%@", arc4random(), arc4random(), [path lastPathComponent]];
     ANDownloadsViewController * dvc = [(ANAppDelegate *)[UIApplication sharedApplication].delegate downloadsViewController];
     ANTransfer * transfer = [[ANTransfer alloc] initWithLocalFile:localPath remoteFile:path totalSize:file.sizeBytes];
     [dvc addTransfer:transfer];
