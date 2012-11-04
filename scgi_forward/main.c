@@ -114,6 +114,7 @@ void sigchild_handler(int sig) {
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password) {
     while (1) {
         int client = accept_method(serverMethod, server);
+        if (errno == EINTR && client < 0) continue;
         if (client < 0) {
             return 1;
         }

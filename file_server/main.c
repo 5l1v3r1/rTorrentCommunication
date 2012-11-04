@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <wait.h>
+#include <errno.h>
 #include "protocol.h"
 
 void handle_client(int fd, const char * user, const char * pass);
@@ -42,6 +43,7 @@ int main(int argc, const char * argv[]) {
     listen(server, 5);
     while (1) {
         int client = accept(server, NULL, NULL);
+        if (errno == EINTR && client < 0) continue;
         if (client < 0) {
             perror("accept");
             return 1;
@@ -50,6 +52,7 @@ int main(int argc, const char * argv[]) {
             close(client);
         } else {
             handle_client(client, argv[1], argv[2]);
+            printf("process should be done.\n");
             exit(0);
         }
     }
