@@ -33,6 +33,10 @@
 }
 
 @property (nonatomic, weak) id<ANRPCSessionDelegate> delegate;
+@property (readonly) NSString * host;
+@property (readonly) UInt16 port;
+@property (readonly) NSString * username;
+@property (readonly) NSString * password;
 
 - (id)initWithHost:(NSString *)aHost port:(UInt16)aPort username:(NSString *)aUsername password:(NSString *)aPassword;
 - (void)pushCall:(id<ANRPCCall>)call;

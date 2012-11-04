@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ANSettingsController.h"
 
 @class ANRootViewController;
 @class ANDownloadsViewController;

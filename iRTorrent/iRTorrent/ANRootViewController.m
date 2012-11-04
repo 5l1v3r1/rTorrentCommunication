@@ -7,6 +7,8 @@
 //
 
 #import "ANRootViewController.h"
+#import "ANAppDelegate.h"
+#import "ANDownloadsViewController.h"
 
 @interface ANRootViewController ()
 
@@ -16,18 +18,13 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 
 @implementation ANRootViewController
 
+@synthesize session;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Torrents";
     
-    NSString * host = [[NSUserDefaults standardUserDefaults] objectForKey:@"server_name"];
-    NSString * username = [[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
-    NSString * password = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];
-    if (!host) host = @"107.22.194.29";
-    if (!username) username = @"root";
-    if (!password) password = @"";
-    session = [[ANRPCSession alloc] initWithHost:host port:9082 username:username password:password];
-    session.delegate = self;
+    [self restartSession];
     
     ANRTorrentOperation * list = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationList arguments:nil];
     [session pushCall:list];
@@ -44,11 +41,28 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
                                              selector:@selector(fileViewSetPriority:)
                                                  name:ANTorrentFileViewControllerChangedPriorityNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fileViewDownloadTapped:)
+                                                 name:ANTorrentFileViewControllerDownloadTappedNotification
+                                               object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)restartSession {
+    if (session) {
+        [session cancelAll];
+        session.delegate = nil;
+    }
+    hasRefreshed = YES;
+    NSString * host = [ANSettingsController host];
+    NSString * username = [ANSettingsController username];
+    NSString * password = [ANSettingsController password];
+    session = [[ANRPCSession alloc] initWithHost:host port:9082 username:username password:password];
+    session.delegate = self;
 }
 
 - (void)refreshItems:(id)sender {
@@ -69,6 +83,27 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     ANRTorrentOperation * setPriority = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationSetPriority
                                                                              arguments:arguments];
     [session pushCall:setPriority];
+}
+
+- (void)fileViewDownloadTapped:(NSNotification *)notification {
+    ANTorrentFileViewController * fileVC = [notification object];
+    ANRTorrentFile * file = fileVC.torrentFile;
+    ANRTorrentInfo * info = activeTorrentVC.torrentInfo;
+    NSAssert(file != nil && info != nil, @"-fileViewDownloadTapped: called at inappropriate time");
+    // get absolute path
+    NSString * path = [info baseFile];
+    if ([[info baseDirectory] length] > 0) {
+        path = [info baseDirectory];
+        for (NSString * comp in file.pathComponents) {
+            path = [path stringByAppendingPathComponent:comp];
+        }
+    }
+    NSString * localPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%d.%d.%@", arc4random(), arc4random(), [path lastPathComponent]];
+    ANDownloadsViewController * dvc = [(ANAppDelegate *)[UIApplication sharedApplication].delegate downloadsViewController];
+    ANTransfer * transfer = [[ANTransfer alloc] initWithLocalFile:localPath remoteFile:path totalSize:file.sizeBytes];
+    [dvc addTransfer:transfer];
+    UITabBarController * tabs = [(ANAppDelegate *)[UIApplication sharedApplication].delegate tabBar];
+    [tabs setSelectedIndex:1];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

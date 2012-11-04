@@ -24,6 +24,8 @@
     urlField.borderStyle = UITextBorderStyleRoundedRect;
     urlField.placeholder = @"URL";
     urlField.font = [UIFont systemFontOfSize:22];
+    urlField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    urlField.keyboardType = UIKeyboardTypeURL;
     [self.view addSubview:urlField];
     
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
