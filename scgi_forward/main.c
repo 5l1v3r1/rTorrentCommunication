@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <netdb.h>
+#include <signal.h>
+#include <wait.h>
 #include "scgi.h"
 #include "client_protocol.h"
 #include "http_response.h"
@@ -12,6 +14,7 @@
 #define AUTH_PASS "toor"
 
 void print_usage(const char * name);
+void sigchild_handler(int sig);
 
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password);
 int handle_client(int client, int localMethod, const char * localSource, const char * username, const char * password);
@@ -88,6 +91,12 @@ int main(int argc, const char * argv[]) {
         print_usage(argv[0]);
         exit(1);
     }
+    // setup sig handler
+    struct sigaction sa;
+    bzero(&sa, sizeof(sa));
+    sa.sa_handler = &sigchild_handler;
+    sigaction(SIGCHLD, &sa, NULL);
+    // setup server
     int server = listen_method(listenMethod, listenSource, allowRemote);
     if (server < 0) exit(1);
     return server_main_loop(listenMethod, server, localMethod, localSource, username, password);
@@ -95,6 +104,11 @@ int main(int argc, const char * argv[]) {
 
 void print_usage(const char * name) {
     fprintf(stderr, "Usage: %s [--listen_unix path | --listen_port port [--local]] [--local_unix path | --local_host host:port] --username user --password pass\n", name);
+}
+
+void sigchild_handler(int sig) {
+    int status;
+    wait(&status);
 }
 
 int server_main_loop(int serverMethod, int server, int localMethod, const char * localSource, const char * username, const char * password) {

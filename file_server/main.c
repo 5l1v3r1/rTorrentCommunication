@@ -9,15 +9,24 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <signal.h>
+#include <wait.h>
 #include "protocol.h"
 
 void handle_client(int fd, const char * user, const char * pass);
+void sigchild_handler(int sigNum);
 
 int main(int argc, const char * argv[]) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s username password port\n", argv[0]);
         return 1;
     }
+    // setup signal handler
+    struct sigaction sa;
+    bzero(&sa, sizeof(sa));
+    sa.sa_handler = &sigchild_handler;
+    sigaction(SIGCHLD, &sa, NULL);
+    // setup server socket
     int server = socket(AF_INET, SOCK_STREAM, 0);
     if (server < 0) {
         perror("socket");
@@ -111,3 +120,9 @@ handleError:
     free(path);
     return;
 }
+
+void sigchild_handler(int signal) {
+    int status;
+    wait(&status);
+}
+
