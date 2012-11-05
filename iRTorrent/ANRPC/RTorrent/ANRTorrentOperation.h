@@ -19,7 +19,8 @@ typedef enum {
     ANRTorrentOperationClose,
     ANRTorrentOperationSetPriority,
     ANRTorrentOperationList,
-    ANRTorrentOperationListFiles
+    ANRTorrentOperationListFiles,
+    ANRTorrentOperationFileInfo
 } ANRTorrentOperationType;
 
 @interface ANRTorrentOperation : NSObject <ANRPCCall> {

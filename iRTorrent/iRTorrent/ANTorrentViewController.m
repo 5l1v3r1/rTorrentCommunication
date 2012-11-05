@@ -117,11 +117,11 @@
         key = @"State";
         value = [torrentInfo.state isEqualToString:@"0"] ? @"Inactive" : @"Active";
     } else if (indexPath.row == 1) {
+        key = @"Downloaded";
+        value = [NSString stringWithFormat:@"%@", filesizeStringForSize(torrentInfo.bytesDone)];
+    } else if (indexPath.row == 2) {
         key = @"Total Size";
         value = [NSString stringWithFormat:@"%@", filesizeStringForSize(torrentInfo.totalBytes)];
-    } else if (indexPath.row == 2) {
-        key = @"Bytes Downloaded";
-        value = [NSString stringWithFormat:@"%@", filesizeStringForSize(torrentInfo.bytesDone)];
     } else if (indexPath.row == 3) {
         key = @"Download Rate";
         value = [NSString stringWithFormat:@"%@/s", filesizeStringForSize(torrentInfo.downRate)];

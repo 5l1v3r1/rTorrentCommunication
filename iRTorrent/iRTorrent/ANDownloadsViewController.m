@@ -76,6 +76,13 @@
     [NSKeyedArchiver archiveRootObject:transfers toFile:savePath];
 }
 
+- (void)pauseAllTransfers {
+    for (ANTransfer * trans in transfers) {
+        if (trans.state != ANTransferStateNotRunning) [trans cancelTransfer];
+    }
+    [self.tableView reloadData];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 }

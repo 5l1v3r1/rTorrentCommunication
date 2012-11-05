@@ -19,5 +19,6 @@
 - (void)addTransfer:(ANTransfer *)aTransfer;
 - (void)downloadCellPlayPause:(NSNotification *)notification;
 - (void)saveTransfers;
+- (void)pauseAllTransfers;
 
 @end

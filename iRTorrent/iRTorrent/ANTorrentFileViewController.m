@@ -34,6 +34,8 @@
                                                          target:self
                                                          action:@selector(downloadPressed:)];
         self.navigationItem.rightBarButtonItem = downloadButton;
+        
+        [self startRefreshing];
     }
     return self;
 }
@@ -53,6 +55,59 @@
                                                         object:self];
 }
 
+#pragma mark - Live Updating -
+
+- (void)stopRefreshing {
+    [refreshTimer invalidate];
+    refreshTimer = nil;
+}
+
+- (void)startRefreshing {
+    hasRefreshed = YES;
+    hasShownError = NO;
+    refreshTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self
+                                                  selector:@selector(refreshTimerTick:)
+                                                  userInfo:nil
+                                                   repeats:YES];
+}
+
+- (void)refreshTimerTick:(id)sender {
+    if (!hasRefreshed) return;
+    hasRefreshed = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:ANTorrentFileViewRequestInfoNotification
+                                                        object:self];
+}
+
+- (void)refreshFileInfoFailed:(NSError *)error {
+    hasRefreshed = YES;
+    if (hasShownError) return;
+    hasShownError = YES;
+    UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                  message:[error localizedDescription]
+                                                 delegate:nil
+                                        cancelButtonTitle:nil
+                                        otherButtonTitles:@"OK", nil];
+    [av show];
+}
+
+- (void)refreshFileInfoSucceeded:(ANRTorrentFile *)nowInfo {
+    hasShownError = NO;
+    torrentFile = nowInfo;
+    prioritySegment.selectedSegmentIndex = torrentFile.priority;
+    [self.tableView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] postNotificationName:ANTorrentFileViewDidAppearNotification
+                                                        object:self];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] postNotificationName:ANTorrentFileViewDidDisappearNotification
+                                                        object:self];
+    [self stopRefreshing];
+}
+
 #pragma mark - Table View -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -60,7 +115,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) return 3;
+    if (section == 0) return 4;
     else return 1;
 }
 
@@ -93,6 +148,9 @@
     } else if (indexPath.row == 2) {
         key = @"Chunks";
         value = [NSString stringWithFormat:@"%d", (int)torrentFile.sizeChunks];
+    } else if (indexPath.row == 3) {
+        key = @"% Complete";
+        value = [NSString stringWithFormat:@"%d%%", (int)round((float)torrentFile.completedChunks / (float)torrentFile.sizeChunks * 100)];
     }
     cell.textLabel.text = key;
     cell.detailTextLabel.text = value;

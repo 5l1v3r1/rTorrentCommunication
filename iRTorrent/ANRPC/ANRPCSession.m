@@ -51,7 +51,10 @@
 - (void)backgroundThread {
     @autoreleasepool {
         while (![[NSThread currentThread] isCancelled]) {
-            [[NSRunLoop currentRunLoop] run];
+            @autoreleasepool {
+                NSDate * nextDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+                [[NSRunLoop currentRunLoop] runUntilDate:nextDate];
+            }
             [NSThread sleepForTimeInterval:0.1];
         }
         [connection disconnect];

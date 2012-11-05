@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0093EF164886DB0029CD12 /* KBContext.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0093EE164886DB0029CD12 /* KBContext.c */; };
 		FA1A3010163DB73C0084FCEE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1A300F163DB73C0084FCEE /* UIKit.framework */; };
 		FA1A3012163DB73C0084FCEE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1A3011163DB73C0084FCEE /* Foundation.framework */; };
 		FA1A3014163DB73C0084FCEE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1A3013163DB73C0084FCEE /* CoreGraphics.framework */; };
@@ -20,7 +21,6 @@
 		FA1A3067163DB74A0084FCEE /* ANRPCConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3035163DB74A0084FCEE /* ANRPCConnection.m */; };
 		FA1A3068163DB74A0084FCEE /* ANRPCSession.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3037163DB74A0084FCEE /* ANRPCSession.m */; };
 		FA1A306A163DB74A0084FCEE /* ANRTorrentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A303C163DB74A0084FCEE /* ANRTorrentInfo.m */; };
-		FA1A306F163DB74A0084FCEE /* KBContext.c in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3047163DB74A0084FCEE /* KBContext.c */; };
 		FA1A3070163DB74A0084FCEE /* KBDecode.c in Sources */ = {isa = PBXBuildFile; fileRef = FA1A3049163DB74A0084FCEE /* KBDecode.c */; };
 		FA1A3071163DB74A0084FCEE /* KBDecodeObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1A304C163DB74A0084FCEE /* KBDecodeObjC.m */; };
 		FA1A3072163DB74A0084FCEE /* KBEncode.c in Sources */ = {isa = PBXBuildFile; fileRef = FA1A304D163DB74A0084FCEE /* KBEncode.c */; };
@@ -63,6 +63,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0093EE164886DB0029CD12 /* KBContext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = KBContext.c; sourceTree = "<group>"; };
 		FA1A300B163DB73C0084FCEE /* iRTorrent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iRTorrent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA1A300F163DB73C0084FCEE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA1A3011163DB73C0084FCEE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -86,7 +87,6 @@
 		FA1A303B163DB74A0084FCEE /* ANRTorrentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANRTorrentInfo.h; sourceTree = "<group>"; };
 		FA1A303C163DB74A0084FCEE /* ANRTorrentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANRTorrentInfo.m; sourceTree = "<group>"; };
 		FA1A3046163DB74A0084FCEE /* KBConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBConst.h; sourceTree = "<group>"; };
-		FA1A3047163DB74A0084FCEE /* KBContext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = KBContext.c; sourceTree = "<group>"; };
 		FA1A3048163DB74A0084FCEE /* KBContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBContext.h; sourceTree = "<group>"; };
 		FA1A3049163DB74A0084FCEE /* KBDecode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = KBDecode.c; sourceTree = "<group>"; };
 		FA1A304A163DB74A0084FCEE /* KBDecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBDecode.h; sourceTree = "<group>"; };
@@ -291,7 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				FA1A3046163DB74A0084FCEE /* KBConst.h */,
-				FA1A3047163DB74A0084FCEE /* KBContext.c */,
+				FA0093EE164886DB0029CD12 /* KBContext.c */,
 				FA1A3048163DB74A0084FCEE /* KBContext.h */,
 				FA1A3049163DB74A0084FCEE /* KBDecode.c */,
 				FA1A304A163DB74A0084FCEE /* KBDecode.h */,
@@ -449,7 +449,6 @@
 				FA1A3067163DB74A0084FCEE /* ANRPCConnection.m in Sources */,
 				FA1A3068163DB74A0084FCEE /* ANRPCSession.m in Sources */,
 				FA1A306A163DB74A0084FCEE /* ANRTorrentInfo.m in Sources */,
-				FA1A306F163DB74A0084FCEE /* KBContext.c in Sources */,
 				FA1A3070163DB74A0084FCEE /* KBDecode.c in Sources */,
 				FA1A3071163DB74A0084FCEE /* KBDecodeObjC.m in Sources */,
 				FA1A3072163DB74A0084FCEE /* KBEncode.c in Sources */,
@@ -481,6 +480,7 @@
 				FACD57E3163F3D1F001A24E6 /* ANTransferCell.m in Sources */,
 				FACD57E6163F42E7001A24E6 /* ANSettingsController.m in Sources */,
 				FA1CA653164069BC00964961 /* ANFileViewController.m in Sources */,
+				FA0093EF164886DB0029CD12 /* KBContext.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

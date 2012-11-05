@@ -24,7 +24,7 @@
 }
 
 - (void)loadView {
-    ANAppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    ANAppDelegate * delegate = (ANAppDelegate *)[UIApplication sharedApplication].delegate;
     self.view = [[UIView alloc] initWithFrame:delegate.downloadsViewController.tableView.bounds];
 }
 

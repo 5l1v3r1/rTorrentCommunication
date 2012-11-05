@@ -19,6 +19,7 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 @implementation ANRootViewController
 
 @synthesize session;
+@synthesize fileVC;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,11 +46,30 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
                                              selector:@selector(fileViewDownloadTapped:)
                                                  name:ANTorrentFileViewControllerDownloadTappedNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fileViewAppeared:)
+                                                 name:ANTorrentFileViewDidAppearNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fileViewDisappeared:)
+                                                 name:ANTorrentFileViewDidDisappearNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fileViewRefreshRequest:)
+                                                 name:ANTorrentFileViewRequestInfoNotification
+                                               object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)severSession {
+    if (!session) return;
+    session.delegate = nil;
+    [session cancelAll];
+    session = nil;
 }
 
 - (void)restartSession {
@@ -65,16 +85,8 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     session.delegate = self;
 }
 
-- (void)refreshItems:(id)sender {
-    if (hasRefreshed) {
-        hasRefreshed = NO;
-        ANRTorrentOperation * list = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationList arguments:nil];
-        [session pushCall:list];
-    }
-}
-
 - (void)fileViewSetPriority:(NSNotification *)notification {
-    ANTorrentFileViewController * fileVC = [notification object];
+    fileVC = [notification object];
     ANRTorrentFile * file = fileVC.torrentFile;
     ANRTorrentInfo * info = activeTorrentVC.torrentInfo;
     NSAssert(file != nil && info != nil, @"-fileViewSetPriority: called at inappropriate time");
@@ -86,7 +98,7 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 }
 
 - (void)fileViewDownloadTapped:(NSNotification *)notification {
-    ANTorrentFileViewController * fileVC = [notification object];
+    fileVC = [notification object];
     ANRTorrentFile * file = fileVC.torrentFile;
     ANRTorrentInfo * info = activeTorrentVC.torrentInfo;
     NSAssert(file != nil && info != nil, @"-fileViewDownloadTapped: called at inappropriate time");
@@ -106,15 +118,55 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
     [tabs setSelectedIndex:1];
 }
 
+- (void)fileViewAppeared:(NSNotification *)notification {
+    fileVC = [notification object];
+}
+
+- (void)fileViewDisappeared:(NSNotification *)notification {
+    fileVC = nil;
+}
+
+- (void)fileViewRefreshRequest:(NSNotification *)notification {
+    fileVC = notification.object;
+    if (!session) {
+        NSError * error = [NSError errorWithDomain:@"ANRootViewController"
+                                              code:1
+                                          userInfo:@{NSLocalizedDescriptionKey: @"No active session"}];
+        [notification.object refreshFileInfoFailed:error];
+    } else {
+        NSNumber * indexNumber = [NSNumber numberWithInt:(int)fileVC.torrentFile.fileIndex];
+        NSArray * arguments = @[activeTorrentVC.torrentInfo.torrentHash, indexNumber];
+        ANRTorrentOperation * operation = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationFileInfo
+                                                                               arguments:arguments];
+        [session pushCall:operation];
+    }
+}
+
+#pragma mark - Live Updating -
+
 - (void)viewDidAppear:(BOOL)animated {
     activeTorrentVC = nil;
 }
 
+- (void)refreshItems:(id)sender {
+    if (hasRefreshed) {
+        hasRefreshed = NO;
+        ANRTorrentOperation * list = [[ANRTorrentOperation alloc] initWithOperation:ANRTorrentOperationList arguments:nil];
+        [session pushCall:list];
+    }
+}
+
 - (void)createRefreshTimer {
+    if (refreshTimer) return;
     refreshTimer = [NSTimer scheduledTimerWithTimeInterval:5
                                                     target:self
                                                   selector:@selector(refreshItems:)
                                                   userInfo:nil repeats:YES];
+}
+
+- (void)invalidateRefreshTimer {
+    [refreshTimer invalidate];
+    refreshTimer = nil;
 }
 
 #pragma mark - Session -
@@ -159,6 +211,16 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
             if (x == NSOrderedSame) {
                 ANRTorrentDirectory * dir = [[ANRTorrentDirectory alloc] initRootWithFiles:response];
                 [activeTorrentVC fetchedTorrentRoot:dir];
+            }
+        } else if (operation.type == ANRTorrentOperationFileInfo) {
+            ANRTorrentFile * file = response;
+            if (!file) {
+                NSError * error = [NSError errorWithDomain:@"ANRootViewController"
+                                                      code:2
+                                                  userInfo:@{NSLocalizedDescriptionKey: @"invalid file index used"}];
+                [fileVC refreshFileInfoFailed:error];
+            } else {
+                [fileVC refreshFileInfoSucceeded:file];
             }
         } else {
             [self refreshItems:self];
@@ -225,6 +287,7 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
         [session pushCall:deleteOperation];
         
         [refreshTimer invalidate];
+        refreshTimer = nil;
         [self createRefreshTimer];
         
         NSMutableArray * list = [torrentList mutableCopy];
@@ -236,8 +299,26 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
 
 - (void)intelligentlyReloadTable:(NSArray *)newList {
     [self.tableView beginUpdates];
-    // delete non-existant
     NSMutableArray * editList = [[NSMutableArray alloc] initWithArray:torrentList];
+    // update existing
+    NSMutableArray * updateIndexPaths = [NSMutableArray array];
+    for (NSUInteger i = 0; i < [editList count]; i++) {
+        NSInteger useIndex = -1;
+        ANRTorrentInfo * info = [editList objectAtIndex:i];
+        for (NSInteger j = 0; j < [newList count]; j++) {
+            if ([[[newList objectAtIndex:j] torrentHash] isEqualToString:info.torrentHash]) {
+                useIndex = j;
+                break;
+            }
+        }
+        if (useIndex < 0) continue;
+        if (![[newList objectAtIndex:useIndex] isEqualToInfo:info]) {
+            [updateIndexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            [editList replaceObjectAtIndex:i withObject:[newList objectAtIndex:useIndex]];
+        }
+    }
+    [self.tableView reloadRowsAtIndexPaths:updateIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    // delete non-existant
     NSUInteger numRemoved = 0;
     NSMutableArray * deleteIndexPaths = [NSMutableArray array];
     for (NSUInteger i = 0; i < [editList count]; i++) {
@@ -261,24 +342,6 @@ static BOOL arrayIncludesTorrentHash(NSArray * list, NSString * hash);
         }
     }
     [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-    // update existing
-    NSMutableArray * updateIndexPaths = [NSMutableArray array];
-    for (NSUInteger i = 0; i < [editList count]; i++) {
-        NSInteger useIndex = -1;
-        ANRTorrentInfo * info = [editList objectAtIndex:i];
-        for (NSInteger j = 0; j < [newList count]; j++) {
-            if ([[[newList objectAtIndex:j] torrentHash] isEqualToString:info.torrentHash]) {
-                useIndex = j;
-                break;
-            }
-        }
-        if (useIndex < 0) continue;
-        if (![[newList objectAtIndex:useIndex] isEqualToInfo:info]) {
-            [updateIndexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-            [editList replaceObjectAtIndex:i withObject:[newList objectAtIndex:useIndex]];
-        }
-    }
-    [self.tableView reloadRowsAtIndexPaths:updateIndexPaths withRowAnimation:UITableViewRowAnimationNone];
     torrentList = [editList copy];
     [self.tableView endUpdates];
 }

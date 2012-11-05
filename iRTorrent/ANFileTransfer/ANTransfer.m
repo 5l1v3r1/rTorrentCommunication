@@ -141,7 +141,7 @@
             totalSize = [readLength longLongValue] + offset;
         });
         long long remaining = [readLength longLongValue];
-        int lastUpdate = 0;
+        NSDate * lastUpdate = nil;
         while (remaining > 0) {
             if ([[NSThread currentThread] isCancelled]) break;
             NSNumber * bytes = [transfer readBlockToFile:handle];
@@ -152,12 +152,11 @@
             }
             if ([[NSThread currentThread] isCancelled]) break;
             remaining -= [bytes longLongValue];
-            lastUpdate += [bytes intValue];
             dispatch_sync(dispatch_get_main_queue(), ^{
                 hasSize = (long long)[handle offsetInFile];
             });
-            if (lastUpdate >= 4096) {
-                lastUpdate = 0;
+            if (!lastUpdate || [lastUpdate timeIntervalSinceNow] < -1) {
+                lastUpdate = [NSDate date];
                 float progress = 1.0 - ((float)remaining / (float)totalSize);
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     if ([delegate respondsToSelector:@selector(transfer:progressChanged:)]) {

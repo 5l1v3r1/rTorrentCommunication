@@ -14,6 +14,7 @@
 #import "ANAddViewController.h"
 #import "NSNumber+FileSize.h"
 #import "ANSettingsController.h"
+#import "ANTorrentFileViewController.h"
 
 @interface ANRootViewController : UITableViewController <ANRPCSessionDelegate, ANTorrentViewControllerDelegate, ANAddViewControllerDelegate> {
     ANRPCSession * session;
@@ -24,17 +25,25 @@
     
     UIBarButtonItem * addButton;
     ANTorrentViewController * activeTorrentVC;
+    
+    __weak ANTorrentFileViewController * fileVC;
 }
 
 @property (readonly) ANRPCSession * session;
+@property (readonly) ANTorrentFileViewController * fileVC;
 
+- (void)severSession;
 - (void)restartSession;
 - (void)createRefreshTimer;
+- (void)invalidateRefreshTimer;
 
 - (void)addPressed:(id)sender;
 - (void)refreshItems:(id)sender;
 - (void)fileViewSetPriority:(NSNotification *)notification;
 - (void)fileViewDownloadTapped:(NSNotification *)notification;
+- (void)fileViewAppeared:(NSNotification *)notification;
+- (void)fileViewDisappeared:(NSNotification *)notification;
+- (void)fileViewRefreshRequest:(NSNotification *)notification;
 
 - (void)intelligentlyReloadTable:(NSArray *)newList;
 
