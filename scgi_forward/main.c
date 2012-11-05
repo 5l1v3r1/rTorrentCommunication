@@ -243,6 +243,8 @@ int listen_method(int method, const char * source, int allowRemote) {
             perror("socket");
             return -1;
         }
+        int on = 1;
+        setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
         local.sin_family = AF_INET;
         local.sin_addr.s_addr = INADDR_ANY; // TODO: allowLocal
         local.sin_port = htons(port);
